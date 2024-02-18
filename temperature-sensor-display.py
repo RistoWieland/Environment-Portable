@@ -10,6 +10,7 @@ import smbus
 from datetime import datetime, timezone
 import psycopg2
 import socket
+import configparser
 
 # Config Register (R/W)
 _REG_CONFIG                 = 0x00
@@ -198,43 +199,18 @@ class INA219:
             value -= 65535
         return value * self._power_lsb
 
+
 def open_connection(db): 
-    global connection, cursor
-    db_params = {
-        "local": {
-            "user": "postgres",
-            "password": "mWHfAG_3Wv7gMo2B2UFC",
-            "host": "localhost",
-            "port": "5432",
-            "database": "portable_env"
-        },
-        "remote": {
-            "user": "postgres",
-            "password": "hTvLXAoamyHaMuds2cX8HDzperki",
-            "host": "139-162-151-203.ip.linodeusercontent.com",
-            "port": "5432",
-            "database": "portable_env"
-        }
-    }
-    if db in db_params:
-        params = db_params[db]
-        try:
-            connection = psycopg2.connect(
-                user=params["user"],
-                password=params["password"],
-                host=params["host"],
-                port=params["port"],
-                database=params["database"]
-            )
-            cursor = connection.cursor()
-#            print(f"Connection to {db} database successful")
-            return connection, cursor
-        except (Exception, psycopg2.Error) as error:
-#            print(f"Error while connecting to {db} database:", error)
-            return None, None
-    else:
-        print(f"Database {db} not found in parameters")
-        return None, None   
+    global connection
+    config = configparser.ConfigParser()
+    config.read('/home/kermit/Config/config.ini')
+    connection = psycopg2.connect(user = config[db]["name"],
+                                  password = config[db]["password"],
+                                  host = config[db]["host"],
+                                  port = config[db]["port"],
+                                  database = config[db]["database"])
+    global cursor
+    cursor = connection.cursor()
 
 
 def close_connection():
