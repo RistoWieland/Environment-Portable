@@ -408,7 +408,7 @@ while True:
 
     temperature_str = str(temperature)
     draw.text((5, 10), 'Temperatur: ', font=font_1, fill = "WHITE")
-    draw.text((5, 40), temperature_str+'°C ', font=font_2, fill = "GREEN")
+    draw.text((5, 40), temperature_str+'°C ', font=font_2, fill = "RED")
     draw.text((5, 100), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 or p < 5: # Key1 is pressed or battery power is smaller than 5%
