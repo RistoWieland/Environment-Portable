@@ -5,7 +5,7 @@ import subprocess
 import git
 import os
 import time
-import shutil
+
 
 # Define the path to your local repository
 repo_path = '/home/kermit/Environment-Portable/'
@@ -42,7 +42,7 @@ def download_update():
     repo.git.pull()
 
     # Copy or move the updated script to the specified location
-    shutil.copy2(repo_path, script_path)  # Assuming script_path is the full path including the script name
+    # shutil.copy2(repo_path, script_path)  # Assuming script_path is the full path including the script name
 
 
 def restart_service():
