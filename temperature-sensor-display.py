@@ -204,7 +204,7 @@ def open_connection(db):
     global connection
     config = configparser.ConfigParser()
     config.read('/home/kermit/Config/config.ini')
-    connection = psycopg2.connect(user = config[db]["name"],
+    connection = psycopg2.connect(user = config[db]["user"],
                                   password = config[db]["password"],
                                   host = config[db]["host"],
                                   port = config[db]["port"],
