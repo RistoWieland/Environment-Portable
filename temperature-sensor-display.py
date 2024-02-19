@@ -387,8 +387,8 @@ main_menu = {
 }
 
 
-def menu():
-    menu_items = list(main_menu.keys())
+def setting_menu(menu):
+    menu_items = list(menu.keys())
     num_items = len(menu_items)
     selected_index = 0  # Start with the first item selected
 
@@ -405,7 +405,7 @@ def menu():
         for i, index in enumerate(range(start_index, end_index)):
             item_name = menu_items[index]
             fill_color = "WHITE" if i == 2 else "GRAY"  # Highlight selected item
-            draw.text((5, 10 + i * 30), item_name, font=font_1, fill=fill_color)
+            draw.text((5, 10 + i * 30), item_name, font=font_3, fill=fill_color)
 
         # Display the selection rectangle
         selection_rect_y = 10 + (selected_index - start_index) * 30
@@ -423,14 +423,14 @@ def menu():
             return  # Go one level higher
         elif LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1:  # Button right is pressed
             selected_item = menu_items[selected_index]
-            submenu = main_menu[selected_item]
+            submenu = menu[selected_item]
             if isinstance(submenu, dict):  # If submenu exists, go one level deeper
                 setting_menu(submenu)
             elif submenu == "Back":  # If it's a "Back" option, go one level higher
                 return
         elif LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:  # Button center is pressed
             selected_item = menu_items[selected_index]
-            action = main_menu[selected_item]
+            action = menu[selected_item]
             if isinstance(action, dict):  # If it's a submenu, go one level deeper
                 setting_menu(action)
             elif callable(action):  # If it's a function, execute it
@@ -557,8 +557,8 @@ while True:
         toggle = 3
 
     # check if center button of joystick is pressed
-    if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # button is released
-        menu()
+    if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
+        setting_menu()
 
 
 
