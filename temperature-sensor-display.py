@@ -405,7 +405,7 @@ def setting_menu(menu):
         for i, index in enumerate(range(start_index, end_index)):
             item_name = menu_items[index]
             fill_color = "WHITE" if i == 2 else "GRAY"  # Highlight selected item
-            draw.text((5, 10 + i * 30), item_name, font=font_3, fill=fill_color)
+            draw.text((5, 10 + i * 30), item_name, font=font_1, fill=fill_color)
 
         # Display the selection rectangle
         selection_rect_y = 10 + (selected_index - start_index) * 30
