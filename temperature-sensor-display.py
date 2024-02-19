@@ -1,12 +1,5 @@
 # requirements:
 
-# menu:
-# interval of writing records
-# delayed start
-# auto if local/remote or if set to local all the time
-# list the records
-# 
-
 import os
 import glob
 import time
@@ -357,32 +350,93 @@ def read_temp():
         temp_c = round(float(temp_string) / 1000.0, 1)
         return temp_c
 
-def setting_menu():
+# Define menu items and structure
+main_menu = {
+    "Settings": {
+        "Record Interval": {
+            "30sec",
+            "1min",
+            "2min",
+            "5min",
+            "10min",
+            "15min",
+            "30min",
+            "60min"
+        },
+        "Display Sleep": {
+            "Never",
+            "1min",
+            "2min",
+            "5min",
+            "10min",
+            "15min",
+            "30min",
+            "60min"
+        },
+        "Recording Delay": {
+            "No",
+            "1min",
+            "2min",
+            "5min",
+            "10min",
+            "15min",
+            "30min",
+            "60min"
+        }
+    }
+}
+
+
+def menu():
+    menu_items = list(main_menu.keys())
+    num_items = len(menu_items)
+    selected_index = 0  # Start with the first item selected
+
     while True:
-        # clear screen
+        # Clear screen
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
-        if LCD.digital_read(LCD.GPIO_KEY_UP_PIN ) == 1: # button is released       
-            draw.polygon([(20, 20), (30, 2), (40, 20)], outline=255, fill=0xff00)  #Up      
 
+        # Determine the range of items to display (5 items in the middle)
+        start_index = max(0, selected_index - 2)
+        end_index = min(num_items, selected_index + 3)
 
-        if LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1: # button is released
-            draw.polygon([(0, 30), (18, 21), (18, 41)], outline=255, fill=0xff00)  #left
-            time.sleep(1)     
-            return 
+        # Display menu items
+        for i, index in enumerate(range(start_index, end_index)):
+            item_name = menu_items[index]
+            fill_color = "WHITE" if i == 2 else "GRAY"  # Highlight selected item
+            draw.text((5, 10 + i * 30), item_name, font=font_1, fill=fill_color)
 
+        # Display the selection rectangle
+        selection_rect_y = 10 + (selected_index - start_index) * 30
+        draw.rectangle([(0, selection_rect_y), (LCD.width, selection_rect_y + 30)], outline="YELLOW")
 
-        if LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1: # button is released
-            draw.polygon([(60, 30), (42, 21), (42, 41)], outline=255, fill=0xff00) #right
-        
+        # Show the image on the LCD
+        LCD.LCD_ShowImage(image, 0, 0)
 
-        if LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN) == 1: # button is released
-            draw.polygon([(30, 60), (40, 42), (20, 42)], outline=255, fill=0xff00) #down   
-        
+        # Check button input
+        if LCD.digital_read(LCD.GPIO_KEY_UP_PIN) == 1:  # Button up is pressed
+            selected_index = (selected_index - 1) % num_items
+        elif LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN) == 1:  # Button down is pressed
+            selected_index = (selected_index + 1) % num_items
+        elif LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1:  # Button left is pressed
+            return  # Go one level higher
+        elif LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1:  # Button right is pressed
+            selected_item = menu_items[selected_index]
+            submenu = main_menu[selected_item]
+            if isinstance(submenu, dict):  # If submenu exists, go one level deeper
+                setting_menu(submenu)
+            elif submenu == "Back":  # If it's a "Back" option, go one level higher
+                return
+        elif LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:  # Button center is pressed
+            selected_item = menu_items[selected_index]
+            action = main_menu[selected_item]
+            if isinstance(action, dict):  # If it's a submenu, go one level deeper
+                setting_menu(action)
+            elif callable(action):  # If it's a function, execute it
+                action()
 
- #       if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # button is pressed
-
-        LCD.LCD_ShowImage(image,0,0)
+        time.sleep(0.2)  # Debounce button press
 
 
 LCD = LCD_1in44.LCD()
@@ -504,7 +558,7 @@ while True:
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # button is released
-        setting_menu()
+        menu()
 
 
 
