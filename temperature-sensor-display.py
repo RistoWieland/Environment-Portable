@@ -383,14 +383,14 @@ main_menu = {
             "60min": lambda: set_record_interval('3600')
         },
         "Display Sleep": {
-            "Never": None,
-            "1min": None,
-            "2min": None,
-            "5min": None,
-            "10min": None,
-            "15min": None,
-            "30min": None,
-            "60min": None
+            "Never":lambda: set_record_interval('0'),
+            "1min": lambda: set_record_interval('60'),
+            "2min": lambda: set_record_interval('120'),
+            "5min": lambda: set_record_interval('300'),
+            "10min": lambda: set_record_interval('600'),
+            "15min": lambda: set_record_interval('900'),
+            "30min": lambda: set_record_interval('1800'),
+            "60min": lambda: set_record_interval('3600'),
         },
         "Recording Delay": {
             "No": None,
@@ -531,10 +531,6 @@ db_location = ""
 display_sleep_last_upload_time = time.time()  
 
 while True:
-    # clear screen
-    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-    draw = ImageDraw.Draw(image)
-    
     # UPS Hat readings
     bus_voltage = ina219.getBusVoltage_V()             # voltage on V- (load side)
     shunt_voltage = ina219.getShuntVoltage_mV() / 1000 # voltage between V+ and V- across the shunt
@@ -563,7 +559,7 @@ while True:
 
     # Check if the display sleep time has passed
     display_sleep_time = settings_reading("display_sleep")
-    if time.time() - display_sleep_last_upload_time >= display_sleep_time:
+    if time.time() - display_sleep_last_upload_time >= display_sleep_time and display_sleep_time > 0:
         display_sleep_time_elapsed = True
     else:
         display_sleep_time_elapsed = False
@@ -575,6 +571,10 @@ while True:
         draw.text((5, 74), 'Int : '+ record_interval_str, font=font_1, fill = "WHITE")
         draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
         draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
+        LCD.LCD_ShowImage(image,0,0)
+    else: # if in sleep then black out display until a key is hit
+        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+        draw = ImageDraw.Draw(image)
         LCD.LCD_ShowImage(image,0,0)
 
     # Check if the record interval time has passed
