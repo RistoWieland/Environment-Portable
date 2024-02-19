@@ -351,13 +351,20 @@ def read_temp():
         return temp_c
 
 
-# Define functions to perform actions based on selected menu items
 def set_record_interval(interval):
-    # Write the selected interval to the config.ini file
+    # Read existing config or create a new one
     config = configparser.ConfigParser()
-    config.read('/home/kermit/Config/config.ini/config.ini')
+    config.read('/home/kermit/Config/config.ini')
+
+    # Check if 'settings' section exists, create it if not
+    if 'settings' not in config:
+        config['settings'] = {}
+
+    # Set the record_interval key in the 'settings' section
     config['settings']['record_interval'] = interval
-    with open('/home/kermit/Config/config.ini/config.ini', 'w') as configfile:
+
+    # Write the updated config to the file
+    with open('/home/kermit/Config/config.ini', 'w') as configfile:
         config.write(configfile)
 
 
