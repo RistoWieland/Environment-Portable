@@ -285,6 +285,17 @@ def check_network_connection():
         return False
 
 
+def delete_all_records(db):
+    open_connection(db)
+    try:
+        cursor.execute("DELETE FROM pfannenstiel;")
+        connection.commit()
+        close_connection()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while moving records to remote PostgreSQL", error)
+        close_connection()
+
+
 def move_records_to_remote_db():
     open_connection("local")
     try:
@@ -306,15 +317,8 @@ def move_records_to_remote_db():
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
-
-    open_connection("local")
-    try:
-        cursor.execute("DELETE FROM pfannenstiel;")
-        connection.commit()
-        close_connection()
-    except (Exception, psycopg2.Error) as error:
-        print("Error while moving records to remote PostgreSQL", error)
-        close_connection()
+    # this needs to be done better with only deleting when insert above was without error    
+    delete_all_records("local")
 
  
 os.system('modprobe w1-gpio')
@@ -430,7 +434,16 @@ while True:
 
     # check if Key2 is pressed. If so then stop recording
     elif LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
-        recording = False
+        print ("Delete all records locally and remotely")
+        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+        draw = ImageDraw.Draw(image)
+        draw.text((5, 0), 'Delete', font=font_2, fill = "YELLOW")
+        draw.text((5, 40), 'All', font=font_2, fill = "YELLOW")
+        draw.text((5, 80), 'Records', font=font_2, fill = "YELLOW")
+        LCD.LCD_ShowImage(image,0,0)
+        time.sleep(5)
+        delete_all_records("local")
+        delete_all_records("remote")
 
     # check if Key1 is pressed then toggle between recording and not recording
     elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1:
