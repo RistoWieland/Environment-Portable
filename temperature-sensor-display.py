@@ -279,7 +279,7 @@ def insert_records(db, temperature):
 def check_network_connection():
     try:
         # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.1", 53), timeout=5)
+        socket.create_connection(("8.8.8.8", 53), timeout=5)
         return True
     except OSError:
         return False
@@ -379,7 +379,7 @@ recording_interval = 60
 # used to not toggle between start recording and stop recording too fast
 toggle = 3
 
-db_location = "n/a"
+db_location = ""
 
 while True:
     # clear screen
@@ -409,7 +409,7 @@ while True:
     # display result to display
     draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
     draw.text((5, 30), temperature_str+'°C ', font=font_2, fill = font_color)
-    draw.text((5, 80), 'DB : '+db_location, font=font_1, fill = "WHITE")
+    draw.text((5, 82), 'DB : '+db_location, font=font_1, fill = "WHITE")
     draw.text((5, 105), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
 
