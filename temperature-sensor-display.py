@@ -359,13 +359,13 @@ def set_record_interval(interval):
     config['settings']['record_interval'] = interval
     with open('/home/kermit/Config/config.ini/config.ini', 'w') as configfile:
         config.write(configfile)
-        
+
 
 # Define menu items and structure
 main_menu = {
     "Settings": {
         "Record Interval": {
-            "30sec": lambda: set_record_interval(30),
+            "30sec": lambda: set_record_interval("30"),
             "1min": lambda: set_record_interval(60),
             "2min": lambda: set_record_interval(120),
             "5min": lambda: set_record_interval(300),
