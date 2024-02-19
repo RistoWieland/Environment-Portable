@@ -528,7 +528,7 @@ toggle = 3
 db_location = ""
 
 # set display sleep timer
-display_sleep_time_last_upload_time = time.time()  
+display_sleep_last_upload_time = time.time()  
 
 while True:
     # clear screen
@@ -596,7 +596,7 @@ while True:
 
     # check if Key3 is pressed or battery power is smaller than 5%. If so then shutdown system
     if LCD.digital_read(LCD.GPIO_KEY3_PIN) == 1 or p < 5: 
-       display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
+       display_sleep_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
        print ("System Shutdown")
        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
        draw = ImageDraw.Draw(image)
@@ -608,7 +608,7 @@ while True:
 
     # check if Key2 is pressed. If so then stop recording
     if LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
-        display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
+        display_sleep_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         print ("Delete all records locally and remotely")
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
@@ -622,7 +622,7 @@ while True:
 
     # check if Key1 is pressed then toggle between recording and not recording
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
-        display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
+        display_sleep_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         recording = not recording
         toggle -= 1
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
@@ -630,7 +630,7 @@ while True:
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
-        display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
+        display_sleep_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         setting_menu(main_menu)
 
 
