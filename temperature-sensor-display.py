@@ -286,7 +286,7 @@ def insert_records(db, temperature):
 def check_network_connection():
     try:
         # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.1", 53), timeout=1)
+        socket.create_connection(("8.8.8.8", 53), timeout=0.5)
         return True
     except OSError:
         return False
