@@ -430,8 +430,6 @@ def setting_menu(menu):
             for i, index in enumerate(range(start_index, end_index)):
                 item_name = menu_items[index]
                 fill_color = "WHITE" if index == selected_index else "GRAY"
-                if index == selected_index and not isinstance(menu[item_name], dict):
-                    fill_color = "GREEN" if selected_leaf == index else "WHITE"
                 draw.text((5, 10 + i * 20), item_name, font=font_4, fill=fill_color)
 
             # Display the selection rectangle
@@ -476,7 +474,15 @@ def setting_menu(menu):
                 else:
                     selected_leaf = selected_index  # Update selected_leaf if leaf node is selected
 
-            time.sleep(0.2)  # Debounce button press
+            # Set the fill color to green for the selected leaf node
+            if selected_leaf is not None:
+                leaf_item_name = menu_items[selected_leaf]
+                if selected_index == selected_leaf:
+                    fill_color = "GREEN"
+                    draw.text((5, 10 + (selected_leaf - start_index) * 20), leaf_item_name, font=font_4, fill=fill_color)
+
+            time.sleep(0.1)  # Debounce button press
+
 
 
 LCD = LCD_1in44.LCD()
