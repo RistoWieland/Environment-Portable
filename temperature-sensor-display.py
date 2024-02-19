@@ -351,7 +351,7 @@ def read_temp():
         return temp_c
 
 
-def set_record_interval(interval):
+def set_config(which_setting, interval):
     # Read existing config or create a new one
     config = configparser.ConfigParser()
     config.read(config_file)
@@ -361,7 +361,7 @@ def set_record_interval(interval):
         config['settings'] = {}
 
     # Set the record_interval key in the 'settings' section
-    config['settings']['record_interval'] = interval
+    config['settings'][which_setting] = interval
 
     # Write the updated config to the file
     with open(config_file, 'w') as configfile:
@@ -372,25 +372,25 @@ def set_record_interval(interval):
 main_menu = {
     "Settings": {
         "Record Interval": {
-            "10sec": lambda: set_record_interval('10'),
-            "30sec": lambda: set_record_interval('30'),
-            "1min": lambda: set_record_interval('60'),
-            "2min": lambda: set_record_interval('120'),
-            "5min": lambda: set_record_interval('300'),
-            "10min": lambda: set_record_interval('600'),
-            "15min": lambda: set_record_interval('900'),
-            "30min": lambda: set_record_interval('1800'),
-            "60min": lambda: set_record_interval('3600')
+            "10sec": lambda: set_config('record_interval','10'),
+            "30sec": lambda: set_config('record_interval','30'),
+            "1min": lambda: set_config('record_interval','60'),
+            "2min": lambda: set_config('record_interval','120'),
+            "5min": lambda: set_config('record_interval','300'),
+            "10min": lambda: set_config('record_interval','600'),
+            "15min": lambda: set_config('record_interval','900'),
+            "30min": lambda: set_config('record_interval','1800'),
+            "60min": lambda: set_config('record_interval','3600')
         },
         "Display Sleep": {
-            "Never":lambda: set_record_interval('0'),
-            "1min": lambda: set_record_interval('60'),
-            "2min": lambda: set_record_interval('120'),
-            "5min": lambda: set_record_interval('300'),
-            "10min": lambda: set_record_interval('600'),
-            "15min": lambda: set_record_interval('900'),
-            "30min": lambda: set_record_interval('1800'),
-            "60min": lambda: set_record_interval('3600'),
+            "Never":lambda: set_config('display_sleep','0'),
+            "1min": lambda: set_config('display_sleep','60'),
+            "2min": lambda: set_config('display_sleep','120'),
+            "5min": lambda: set_config('display_sleep','300'),
+            "10min": lambda: set_config('display_sleep','600'),
+            "15min": lambda: set_config('display_sleep','900'),
+            "30min": lambda: set_config('display_sleep','1800'),
+            "60min": lambda: set_config('display_sleep','3600'),
         },
         "Recording Delay": {
             "No": None,
