@@ -391,6 +391,9 @@ main_menu = {
 
 
 def setting_menu(menu):
+    # wait for the center key to be released in order to not bounce further
+    while LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:
+        pass  # Wait for the pin value to change from 1 to 0
     while True:
         menu_items = list(menu.keys())
         num_items = len(menu_items)
