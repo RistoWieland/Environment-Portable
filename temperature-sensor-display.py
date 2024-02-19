@@ -409,7 +409,6 @@ main_menu = {
 }
 
 
-
 def setting_menu(menu):
     selected_leaf = None  # Variable to store the index of the selected leaf node
     while True:
@@ -480,11 +479,11 @@ def setting_menu(menu):
             time.sleep(0.1)  # Debounce button press
 
 
-def record_interval_reading():
+def settings_reading(which_setting):
     config = configparser.ConfigParser()
     config.read(config_file)
-    recording_interval = int(config["settings"]["record_interval"])
-    return recording_interval
+    setting_value = int(config["settings"][which_setting])
+    return setting_value
 
 
 LCD = LCD_1in44.LCD()
@@ -519,7 +518,7 @@ config_file = '/home/kermit/Config/config.ini'
 recording = False
 
 # Initialize variables for timestamp and flag
-recording_last_upload_time = time.time() - record_interval_reading() # Get current timestamp minus interval to start recording immediately
+recording_last_upload_time = time.time() - settings_reading("record_interval") # Get current timestamp minus interval to start recording immediately
 recording_time_elapsed = False
 
 # used to not toggle between start recording and stop recording too fast
@@ -549,7 +548,7 @@ while True:
     temperature_str = str(temperature)
 
     # reading the record interval from the config file
-    record_interval = record_interval_reading()
+    record_interval = settings_reading("record_interval")
 
     # check if recording. If so then change the color to green. If no recording then change color to red
     if recording:
@@ -568,8 +567,7 @@ while True:
     draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
 
-    # Check if one minute has passed
-
+    # Check if the record interval time has passed
     if time.time() - recording_last_upload_time >= record_interval:
         recording_time_elapsed = True
         recording_last_upload_time = time.time()  # Update timestamp
