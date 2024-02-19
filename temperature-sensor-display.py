@@ -436,9 +436,11 @@ def setting_menu(menu):
                     setting_menu(submenu)
                 elif submenu == "Back":  # If it's a "Back" option, go one level higher
                     return
-            # wait for the center key to be released in order to not bounce further
-            while LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:
-                pass  # Wait for the pin value to change from 1 to 0        
+            # wait for the center key to be released in order to not bounce further if the first time in the menu
+            if first_time_in_menu:
+                first_time_in_menu = False
+                while LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:
+                    pass  # Wait for the pin value to change from 1 to 0        
             if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:  # Button center is pressed
                 selected_item = menu_items[selected_index]
                 action = menu[selected_item]
@@ -571,6 +573,8 @@ while True:
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
+        global first_time_in_menu
+        first_time_in_menu = True
         setting_menu(main_menu)
 
 
