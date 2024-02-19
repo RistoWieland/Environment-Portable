@@ -372,14 +372,15 @@ def set_record_interval(interval):
 main_menu = {
     "Settings": {
         "Record Interval": {
-            "30sec": lambda: set_record_interval("30"),
-            "1min": lambda: set_record_interval(60),
-            "2min": lambda: set_record_interval(120),
-            "5min": lambda: set_record_interval(300),
-            "10min": lambda: set_record_interval(600),
-            "15min": lambda: set_record_interval(900),
-            "30min": lambda: set_record_interval(1800),
-            "60min": lambda: set_record_interval(3600)
+            "10sec": lambda: set_record_interval('10'),
+            "30sec": lambda: set_record_interval('30'),
+            "1min": lambda: set_record_interval('60'),
+            "2min": lambda: set_record_interval('120'),
+            "5min": lambda: set_record_interval('300'),
+            "10min": lambda: set_record_interval('600'),
+            "15min": lambda: set_record_interval('900'),
+            "30min": lambda: set_record_interval('1800'),
+            "60min": lambda: set_record_interval('3600')
         },
         "Display Sleep": {
             "Never": None,
