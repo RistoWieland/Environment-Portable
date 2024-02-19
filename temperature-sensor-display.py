@@ -361,8 +361,7 @@ main_menu = {
             "10min": None,
             "15min": None,
             "30min": None,
-            "60min": None,
-            "Back": None
+            "60min": None
         },
         "Display Sleep": {
             "Never": None,
@@ -372,8 +371,7 @@ main_menu = {
             "10min": None,
             "15min": None,
             "30min": None,
-            "60min": None,
-            "Back": None
+            "60min": None
         },
         "Recording Delay": {
             "No": None,
@@ -383,8 +381,7 @@ main_menu = {
             "10min": None,
             "15min": None,
             "30min": None,
-            "60min": None,
-            "Back": None
+            "60min": None
         },
         "Back": None
     },
