@@ -370,11 +370,11 @@ ina219 = INA219(addr=0x43)
 # after boot the results should not be written by default
 recording = False
 
-# Initialize variables for timestamp and flag
-recording_last_upload_time = time.time()  # Get current timestamp
-recording_time_elapsed = False
 # set recording to db interval in seconds
 recording_interval = 60 
+# Initialize variables for timestamp and flag
+recording_last_upload_time = time.time() - recording_interval # Get current timestamp minus interval to start recording immediately
+recording_time_elapsed = False
 
 # used to not toggle between start recording and stop recording too fast
 toggle = 3
