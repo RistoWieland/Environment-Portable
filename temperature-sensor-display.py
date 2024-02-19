@@ -405,6 +405,7 @@ while True:
         font_color = "GREEN"
     elif not recording:
         font_color = "RED"
+        db_location = ""
 
     # display result to display
     draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
