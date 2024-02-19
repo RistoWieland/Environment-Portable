@@ -561,7 +561,7 @@ while True:
     # display result to display
     draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
     draw.text((5, 25), temperature_str + '°C ', font=font_2, fill = font_color)
-     draw.text((5, 74), 'Int : '+ record_interval, font=font_1, fill = "WHITE")
+    draw.text((5, 74), 'Int : '+ record_interval, font=font_1, fill = "WHITE")
     draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
     draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
