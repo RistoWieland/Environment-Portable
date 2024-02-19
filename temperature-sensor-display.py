@@ -399,7 +399,6 @@ def setting_menu(menu):
         num_items = len(menu_items)
         start_index = 0  # Start index for displaying menu items
         selected_index = 0  # Index of the selected item
-        prev_down_button_state = 0  # Previous state of the down button
 
         while True:
             # Clear screen
@@ -423,15 +422,14 @@ def setting_menu(menu):
             LCD.LCD_ShowImage(image, 0, 0)
 
             # Check button input
-            down_button_state = LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN)
-            if down_button_state == 1 and prev_down_button_state == 0:  # Button down is pressed
-                selected_index = min(end_index - 1, selected_index + 1)
-                if selected_index == end_index - 1 and end_index < num_items:
-                    start_index += 1
-            elif LCD.digital_read(LCD.GPIO_KEY_UP_PIN) == 1:  # Button up is pressed
+            if LCD.digital_read(LCD.GPIO_KEY_UP_PIN) == 1:  # Button up is pressed
                 selected_index = max(start_index, selected_index - 1)
                 if selected_index == start_index and start_index > 0:
                     start_index -= 1
+            elif LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN) == 1:  # Button down is pressed
+                selected_index = min(end_index - 1, selected_index + 1)
+                if selected_index == end_index - 1 and end_index < num_items:
+                    start_index += 1
             elif LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1:  # Button left is pressed
                 return  # Go one level higher
             elif LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1:  # Button right is pressed
@@ -449,9 +447,8 @@ def setting_menu(menu):
                 elif callable(action):  # If it's a function, execute it
                     action()
 
-            prev_down_button_state = down_button_state
             time.sleep(0.2)  # Debounce button press
-            
+
 
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
