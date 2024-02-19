@@ -345,7 +345,7 @@ LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
 
 # Load a font
-font_path = "/home/kermit/temperature_sensor/JMH Typewriter-Bold.ttf"
+font_path = "/home/kermit/Environment-Portable/JMH Typewriter-Bold.ttf"
 font_size_1 = 18
 font_1 = ImageFont.truetype(font_path, font_size_1)
 font_size_2 = 44
