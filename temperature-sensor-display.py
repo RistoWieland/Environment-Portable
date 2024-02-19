@@ -391,6 +391,7 @@ main_menu = {
 
 
 def setting_menu(menu):
+    first_time_in_menu = True
     while True:
         menu_items = list(menu.keys())
         num_items = len(menu_items)
@@ -573,8 +574,6 @@ while True:
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
-        global first_time_in_menu
-        first_time_in_menu = True
         setting_menu(main_menu)
 
 
