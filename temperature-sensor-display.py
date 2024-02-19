@@ -358,6 +358,10 @@ ina219 = INA219(addr=0x43)
 # create_table("remote")
 # create_table("local")
 
+# to control if temperature meassurement results should be write in the db or no
+# after boot the results should not be written by default
+recording = False
+
 while True:
     # clear screen
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
@@ -372,31 +376,52 @@ while True:
     if(p > 100):p = 100
     if(p < 0):p = 0
     battery = str(round(p,1))
-    # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
 
+    # temperature reading
     temperature = read_temp()
-
-    if check_network_connection():
-        insert_records("remote", temperature)
-        move_records_to_remote_db()
-    else:
-        insert_records("local", temperature)
-
     temperature_str = str(temperature)
+
+    # check if recording. If so then change the color to green. If no recording then change color to red
+    if recording:
+        font_color = "GREEN"
+    elif not recording:
+        font_color = "RED"
+        
+    # display result to display
     draw.text((5, 10), 'Temperatur: ', font=font_1, fill = "WHITE")
-    draw.text((5, 40), temperature_str+'°C ', font=font_2, fill = "RED")
+    draw.text((5, 40), temperature_str+'°C ', font=font_2, fill = font_color)
     draw.text((5, 100), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
-    if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 or p < 5: # Key1 is pressed or battery power is smaller than 5%
+
+    # check if network connection then write results remote and synch database local to remote. 
+    # if no network connection then write result local
+    if check_network_connection() and recording:
+        insert_records("remote", temperature)
+        move_records_to_remote_db()
+    elif recording:
+        insert_records("local", temperature)
+
+    # check if Key3 is pressed or battery power is smaller than 5%. If so then shutdown system
+    if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 3 or p < 5: 
        print ("System Shutdown")
        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
        draw = ImageDraw.Draw(image)
-       draw.text((5, 10), 'Sys', font=font_2, fill = "WHITE")
-       draw.text((5, 50), 'Shut', font=font_2, fill = "WHITE")
+       draw.text((5, 0), 'Sys', font=font_2, fill = "YELLOW")
+       draw.text((5, 40), 'Shut', font=font_2, fill = "YELLOW")
+       draw.text((5, 80), 'Down', font=font_2, fill = "YELLOW")
        LCD.LCD_ShowImage(image,0,0)
        time.sleep(5)
        subprocess.run(["sudo", "shutdown", "-h", "now"])
-    time.sleep(10)
+
+    # check if Key2 is pressed. If so then stop recording
+    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 2:
+        recording = False
+
+    # check if Key1 is pressed. If so then start recording
+    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 2:
+        recording = True
+
+    time.sleep(5)
 
 
 
