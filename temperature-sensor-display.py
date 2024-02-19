@@ -418,7 +418,7 @@ while True:
         recording = False
 
     # check if Key1 is pressed. If so then start recording
-    elif LCD.digital_read(LCD.GPIO_KEY1s_PIN) == 1:
+    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1:
         recording = True
 
     time.sleep(5)
