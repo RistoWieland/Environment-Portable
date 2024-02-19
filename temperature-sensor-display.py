@@ -474,12 +474,12 @@ def backup_menu(menu):
 
 def setting_menu(menu):
     first_time_in_menu = True
-    selected_leaf = None  # Variable to store the index of the selected leaf node
     while True:
         menu_items = list(menu.keys())
         num_items = len(menu_items)
         start_index = 0  # Start index for displaying menu items
         selected_index = 0  # Index of the selected item
+        selected_leaf = None  # Variable to store the index of the selected leaf node
 
         while True:
             # Clear screen
