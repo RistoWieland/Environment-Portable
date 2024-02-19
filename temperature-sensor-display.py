@@ -409,6 +409,7 @@ main_menu = {
 }
 
 
+
 def setting_menu(menu):
     selected_leaf = None  # Variable to store the index of the selected leaf node
     while True:
@@ -473,16 +474,10 @@ def setting_menu(menu):
                     action()
                 else:
                     selected_leaf = selected_index  # Update selected_leaf if leaf node is selected
-
-            # Set the fill color to green for the selected leaf node
-            if selected_leaf is not None:
-                leaf_item_name = menu_items[selected_leaf]
-                if selected_index == selected_leaf:
                     fill_color = "GREEN"
-                    draw.text((5, 10 + (selected_leaf - start_index) * 20), leaf_item_name, font=font_4, fill=fill_color)
+                    draw.text((5, 10 + (selected_index - start_index) * 20), selected_item, font=font_4, fill=fill_color)
 
-            time.sleep(0.2)  # Debounce button press
-
+            time.sleep(0.1)  # Debounce button press
 
 
 LCD = LCD_1in44.LCD()
