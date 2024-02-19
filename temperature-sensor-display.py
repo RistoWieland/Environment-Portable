@@ -356,6 +356,8 @@ font_size_1 = 18
 font_1 = ImageFont.truetype(font_path, font_size_1)
 font_size_2 = 44
 font_2 = ImageFont.truetype(font_path, font_size_2)
+font_size_3 = 26
+font_3 = ImageFont.truetype(font_path, font_size_3)
 
 # Create an INA219 instance.
 ina219 = INA219(addr=0x43)
@@ -437,9 +439,9 @@ while True:
         print ("Delete all records locally and remotely")
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
-        draw.text((5, 0), 'Delete', font=font_2, fill = "YELLOW")
-        draw.text((5, 40), 'All', font=font_2, fill = "YELLOW")
-        draw.text((5, 80), 'Records', font=font_2, fill = "YELLOW")
+        draw.text((5, 0), 'Delete', font=font_3, fill = "YELLOW")
+        draw.text((5, 40), 'All', font=font_3, fill = "YELLOW")
+        draw.text((5, 80), 'Records', font=font_3, fill = "YELLOW")
         LCD.LCD_ShowImage(image,0,0)
         time.sleep(5)
         delete_all_records("local")
