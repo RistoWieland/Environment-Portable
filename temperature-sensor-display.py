@@ -485,6 +485,7 @@ def record_interval_reading():
     config.read(config_file)
     recording_interval = int(config["settings"]["record_interval"])
     return recording_interval
+    
 
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
@@ -512,14 +513,13 @@ ina219 = INA219(addr=0x43)
 # path and file name of config file
 global config_file
 config_file = '/home/kermit/Config/config.ini'
-record_interval = record_interval_reading()
 
 # to control if temperature meassurement results should be write in the db or no
 # after boot the results should not be written by default
 recording = False
 
 # Initialize variables for timestamp and flag
-recording_last_upload_time = time.time() - recording_interval # Get current timestamp minus interval to start recording immediately
+recording_last_upload_time = time.time() - record_interval_reading() # Get current timestamp minus interval to start recording immediately
 recording_time_elapsed = False
 
 # used to not toggle between start recording and stop recording too fast
