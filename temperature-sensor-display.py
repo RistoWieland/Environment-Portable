@@ -548,20 +548,22 @@ while True:
     temperature = read_temp()
     temperature_str = str(temperature)
 
+    # reading the record interval from the config file
+    record_interval = record_interval_reading()
+
     # check if recording. If so then change the color to green. If no recording then change color to red
     if recording:
         font_color = "GREEN"
+        record_interval_str = str(record_interval)
     if not recording:
         font_color = "RED"
         db_location = ""
-    
-    # reading the record interval from the config file
-    record_interval = record_interval_reading()
-    
+        record_interval_str = ""
+
     # display result to display
     draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
     draw.text((5, 25), temperature_str + '°C ', font=font_2, fill = font_color)
-    draw.text((5, 74), 'Int : '+ str(record_interval), font=font_1, fill = "WHITE")
+    draw.text((5, 74), 'Int : '+ record_interval_str, font=font_1, fill = "WHITE")
     draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
     draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
