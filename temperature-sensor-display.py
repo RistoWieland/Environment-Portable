@@ -459,6 +459,8 @@ def setting_menu(menu):
                     setting_menu(submenu)
                 elif submenu == "Back":  # If it's a "Back" option, go one level higher
                     return
+                else:
+                    selected_leaf = None  # Reset selected_leaf if non-leaf node is selected
             # wait for the center key to be released in order to not bounce further if the first time in the menu
             if first_time_in_menu:
                 first_time_in_menu = False
@@ -471,8 +473,8 @@ def setting_menu(menu):
                     setting_menu(action)
                 elif callable(action):  # If it's a function, execute it
                     action()
-                if selected_leaf is None:
-                    selected_leaf = selected_index
+                else:
+                    selected_leaf = selected_index  # Update selected_leaf if leaf node is selected
 
             time.sleep(0.2)  # Debounce button press
 
