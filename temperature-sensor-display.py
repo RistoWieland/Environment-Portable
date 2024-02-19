@@ -481,7 +481,8 @@ def setting_menu(menu):
                     fill_color = "GREEN"
                     draw.text((5, 10 + (selected_leaf - start_index) * 20), leaf_item_name, font=font_4, fill=fill_color)
 
-            time.sleep(0.1)  # Debounce button press
+            time.sleep(0.2)  # Debounce button press
+
 
 
 LCD = LCD_1in44.LCD()
