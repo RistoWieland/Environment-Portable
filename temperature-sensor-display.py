@@ -386,7 +386,7 @@ while True:
         font_color = "GREEN"
     elif not recording:
         font_color = "RED"
-        
+
     # display result to display
     draw.text((5, 10), 'Temperatur: ', font=font_1, fill = "WHITE")
     draw.text((5, 40), temperature_str+'°C ', font=font_2, fill = font_color)
@@ -418,7 +418,7 @@ while True:
         recording = False
 
     # check if Key1 is pressed. If so then start recording
-    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 2:
+    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1:
         recording = True
 
     time.sleep(5)
