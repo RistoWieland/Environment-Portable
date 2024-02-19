@@ -378,8 +378,8 @@ def setting_menu():
             draw.polygon([(30, 60), (40, 42), (20, 42)], outline=255, fill=0xff00) #down   
         
 
-        if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # button is pressed
-            return        
+ #       if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # button is pressed
+
         LCD.LCD_ShowImage(image,0,0)
 
 
