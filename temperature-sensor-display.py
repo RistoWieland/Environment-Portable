@@ -455,7 +455,7 @@ while True:
         toggle -= 1
         print(toggle)
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
-        toggle == 3
+        toggle = 3
         print(toggle)
 
 
