@@ -379,6 +379,8 @@ recording_interval = 60
 # used to not toggle between start recording and stop recording too fast
 toggle = 3
 
+db_location = "n/a"
+
 while True:
     # clear screen
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
@@ -405,8 +407,9 @@ while True:
         font_color = "RED"
 
     # display result to display
-    draw.text((5, 10), 'Temperatur: ', font=font_1, fill = "WHITE")
-    draw.text((5, 40), temperature_str+'°C ', font=font_2, fill = font_color)
+    draw.text((5, 5), 'Temperatur: ', font=font_1, fill = "WHITE")
+    draw.text((5, 35), temperature_str+'°C ', font=font_2, fill = font_color)
+    draw.text((5, 85), 'DB Location: '+db_location, font=font_1, fill = "WHITE")
     draw.text((5, 100), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
 
@@ -421,9 +424,11 @@ while True:
         insert_records("remote", temperature)
         move_records_to_remote_db()
         recording_time_elapsed = False
+        db_location = "remote"
     elif recording and recording_time_elapsed:
         insert_records("local", temperature)
         recording_time_elapsed = False
+        db_location = "local"
 
     # check if Key3 is pressed or battery power is smaller than 5%. If so then shutdown system
     if LCD.digital_read(LCD.GPIO_KEY3_PIN) == 1 or p < 5: 
