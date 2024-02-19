@@ -409,77 +409,14 @@ main_menu = {
 }
 
 
-def backup_menu(menu):
-    first_time_in_menu = True
-    while True:
-        menu_items = list(menu.keys())
-        num_items = len(menu_items)
-        start_index = 0  # Start index for displaying menu items
-        selected_index = 0  # Index of the selected item
-
-        while True:
-            # Clear screen
-            image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-            draw = ImageDraw.Draw(image)
-
-            # Determine the range of items to display (max 6 items)
-            end_index = min(start_index + 6, num_items)
-
-            # Display menu items
-            for i, index in enumerate(range(start_index, end_index)):
-                item_name = menu_items[index]
-                fill_color = "WHITE" if index == selected_index else "GRAY"
-                draw.text((5, 10 + i * 20), item_name, font=font_4, fill=fill_color)
-
-            # Display the selection rectangle
-            selection_rect_y = 10 + (selected_index - start_index) * 20
-            draw.rectangle([(0, selection_rect_y), (LCD.width-1, selection_rect_y + 16)], outline="YELLOW")
-
-            # Show the image on the LCD
-            LCD.LCD_ShowImage(image, 0, 0)
-
-            # Check button input
-            if LCD.digital_read(LCD.GPIO_KEY_UP_PIN) == 1:  # Button up is pressed
-                selected_index = max(start_index, selected_index - 1)
-                if selected_index == start_index and start_index > 0:
-                    start_index -= 1
-            if LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN) == 1:  # Button down is pressed
-                selected_index = min(end_index - 1, selected_index + 1)
-                if selected_index == end_index - 1 and end_index < num_items:
-                    start_index += 1
-            if LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1:  # Button left is pressed
-                return  # Go one level higher
-            if LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1:  # Button right is pressed
-                selected_item = menu_items[selected_index]
-                submenu = menu[selected_item]
-                if isinstance(submenu, dict):  # If submenu exists, go one level deeper
-                    setting_menu(submenu)
-                elif submenu == "Back":  # If it's a "Back" option, go one level higher
-                    return
-            # wait for the center key to be released in order to not bounce further if the first time in the menu
-            if first_time_in_menu:
-                first_time_in_menu = False
-                while LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:
-                    pass  # Wait for the pin value to change from 1 to 0        
-            if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:  # Button center is pressed
-                selected_item = menu_items[selected_index]
-                action = menu[selected_item]
-                if isinstance(action, dict):  # If it's a submenu, go one level deeper
-                    setting_menu(action)
-                elif callable(action):  # If it's a function, execute it
-                    action()
-
-            time.sleep(0.2)  # Debounce button press
-
-
 def setting_menu(menu):
-    first_time_in_menu = True
+    selected_leaf = None  # Variable to store the index of the selected leaf node
     while True:
+        first_time_in_menu = True  # Reset first_time_in_menu flag
         menu_items = list(menu.keys())
         num_items = len(menu_items)
         start_index = 0  # Start index for displaying menu items
         selected_index = 0  # Index of the selected item
-        selected_leaf = None  # Variable to store the index of the selected leaf node
 
         while True:
             # Clear screen
