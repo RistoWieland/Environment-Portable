@@ -403,7 +403,7 @@ while True:
     # check if recording. If so then change the color to green. If no recording then change color to red
     if recording:
         font_color = "GREEN"
-    elif not recording:
+    if not recording:
         font_color = "RED"
         db_location = ""
 
@@ -426,7 +426,7 @@ while True:
         move_records_to_remote_db()
         recording_time_elapsed = False
         db_location = "remote"
-    elif recording and recording_time_elapsed:
+    if not check_network_connection() and recording and recording_time_elapsed:
         insert_records("local", temperature)
         recording_time_elapsed = False
         db_location = "local"
