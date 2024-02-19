@@ -279,7 +279,7 @@ def insert_records(db, temperature):
 def check_network_connection():
     try:
         # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.8", 53), timeout=5)
+        socket.create_connection(("8.8.8.1", 53), timeout=5)
         return True
     except OSError:
         return False
@@ -453,10 +453,8 @@ while True:
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
         recording = not recording
         toggle -= 1
-        print(toggle)
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
         toggle = 3
-        print(toggle)
 
 
 
