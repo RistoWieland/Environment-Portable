@@ -485,7 +485,7 @@ def record_interval_reading():
     config.read(config_file)
     recording_interval = int(config["settings"]["record_interval"])
     return recording_interval
-    
+
 
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
@@ -554,17 +554,21 @@ while True:
     if not recording:
         font_color = "RED"
         db_location = ""
-
+    
+    # reading the record interval from the config file
+    record_interval = record_interval_reading()
+    
     # display result to display
     draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
-    draw.text((5, 30), temperature_str+'°C ', font=font_2, fill = font_color)
-    draw.text((5, 82), 'DB : '+db_location, font=font_1, fill = "WHITE")
-    draw.text((5, 105), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
+    draw.text((5, 25), temperature_str + '°C ', font=font_2, fill = font_color)
+     draw.text((5, 74), 'Int : '+ record_interval, font=font_1, fill = "WHITE")
+    draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
+    draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
 
     # Check if one minute has passed
 
-    if time.time() - recording_last_upload_time >= record_interval_reading():
+    if time.time() - recording_last_upload_time >= record_interval:
         recording_time_elapsed = True
         recording_last_upload_time = time.time()  # Update timestamp
 
