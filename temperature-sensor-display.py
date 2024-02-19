@@ -367,7 +367,9 @@ def setting_menu():
 
 
         if LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1: # button is released
-            draw.polygon([(0, 30), (18, 21), (18, 41)], outline=255, fill=0xff00)  #left      
+            draw.polygon([(0, 30), (18, 21), (18, 41)], outline=255, fill=0xff00)  #left
+            time.sleep(1)     
+            return 
 
 
         if LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1: # button is released
