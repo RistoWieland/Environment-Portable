@@ -205,7 +205,7 @@ class INA219:
 def open_connection(db): 
     global connection
     config = configparser.ConfigParser()
-    config.read('/home/kermit/Config/config.ini')
+    config.read(config_file)
     connection = psycopg2.connect(user = config[db]["user"],
                                   password = config[db]["password"],
                                   host = config[db]["host"],
@@ -354,7 +354,7 @@ def read_temp():
 def set_record_interval(interval):
     # Read existing config or create a new one
     config = configparser.ConfigParser()
-    config.read('/home/kermit/Config/config.ini')
+    config.read(config_file)
 
     # Check if 'settings' section exists, create it if not
     if 'settings' not in config:
@@ -364,7 +364,7 @@ def set_record_interval(interval):
     config['settings']['record_interval'] = interval
 
     # Write the updated config to the file
-    with open('/home/kermit/Config/config.ini', 'w') as configfile:
+    with open(config_file, 'w') as configfile:
         config.write(configfile)
 
 
@@ -503,12 +503,16 @@ ina219 = INA219(addr=0x43)
 # create_table("remote")
 # create_table("local")
 
+# path and file name of config file
+config_file = '/home/kermit/Config/config.ini'
+config = configparser.ConfigParser()
+config.read(config_file)
+recording_interval = int(config["settings"]["record_interval"])
+
 # to control if temperature meassurement results should be write in the db or no
 # after boot the results should not be written by default
 recording = False
 
-# set recording to db interval in seconds
-recording_interval = 60 
 # Initialize variables for timestamp and flag
 recording_last_upload_time = time.time() - recording_interval # Get current timestamp minus interval to start recording immediately
 recording_time_elapsed = False
@@ -516,7 +520,9 @@ recording_time_elapsed = False
 # used to not toggle between start recording and stop recording too fast
 toggle = 3
 
+# writing to db and if yes to local or remote
 db_location = ""
+
 
 while True:
     # clear screen
