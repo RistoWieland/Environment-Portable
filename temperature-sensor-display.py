@@ -558,7 +558,7 @@ while True:
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
-        setting_menu()
+        setting_menu(main_menu)
 
 
 
