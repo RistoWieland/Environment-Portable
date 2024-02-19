@@ -480,6 +480,12 @@ def setting_menu(menu):
             time.sleep(0.1)  # Debounce button press
 
 
+def record_interval_reading():
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    recording_interval = int(config["settings"]["record_interval"])
+    return recording_interval
+
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
@@ -504,10 +510,9 @@ ina219 = INA219(addr=0x43)
 # create_table("local")
 
 # path and file name of config file
+global config_file
 config_file = '/home/kermit/Config/config.ini'
-config = configparser.ConfigParser()
-config.read(config_file)
-recording_interval = int(config["settings"]["record_interval"])
+record_interval = record_interval_reading()
 
 # to control if temperature meassurement results should be write in the db or no
 # after boot the results should not be written by default
@@ -558,7 +563,8 @@ while True:
     LCD.LCD_ShowImage(image,0,0)
 
     # Check if one minute has passed
-    if time.time() - recording_last_upload_time >= recording_interval:
+
+    if time.time() - recording_last_upload_time >= record_interval_reading():
         recording_time_elapsed = True
         recording_last_upload_time = time.time()  # Update timestamp
 
