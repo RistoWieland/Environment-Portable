@@ -413,7 +413,7 @@ def setting_menu(menu):
 
             # Display the selection rectangle
             selection_rect_y = 10 + (selected_index - start_index) * 20
-            draw.rectangle([(0, selection_rect_y), (LCD.width-1, selection_rect_y + 18)], outline="YELLOW")
+            draw.rectangle([(0, selection_rect_y), (LCD.width-1, selection_rect_y + 16)], outline="YELLOW")
 
             # Show the image on the LCD
             LCD.LCD_ShowImage(image, 0, 0)
