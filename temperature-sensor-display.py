@@ -486,12 +486,11 @@ def settings_reading(which_setting):
     return setting_value
 
 
+# initalizing LCD
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
-image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-draw = ImageDraw.Draw(image)
 
 # Load a font
 font_path = "/home/kermit/Environment-Portable/JMH Typewriter-Bold.ttf"
@@ -533,6 +532,8 @@ db_location = ""
 display_sleep_last_upload_time = time.time()  
 
 while True:
+    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+    draw = ImageDraw.Draw(image)
     # UPS Hat readings
     bus_voltage = ina219.getBusVoltage_V()             # voltage on V- (load side)
     shunt_voltage = ina219.getShuntVoltage_mV() / 1000 # voltage between V+ and V- across the shunt
