@@ -376,6 +376,9 @@ recording_time_elapsed = False
 # set recording to db interval in seconds
 recording_interval = 60 
 
+# used to not toggle between start recording and stop recording too fast
+toggle = 3
+
 while True:
     # clear screen
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
@@ -442,13 +445,16 @@ while True:
         draw.text((5, 50), 'All', font=font_3, fill = "YELLOW")
         draw.text((5, 90), 'Records', font=font_3, fill = "YELLOW")
         LCD.LCD_ShowImage(image,0,0)
-        time.sleep(5)
+        time.sleep(3)
         delete_all_records("local")
         delete_all_records("remote")
 
     # check if Key1 is pressed then toggle between recording and not recording
-    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1:
+    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
         recording = not recording
+        toggle =- 1
+        if toggle == 0:
+            toggle ==3
 
 
 
