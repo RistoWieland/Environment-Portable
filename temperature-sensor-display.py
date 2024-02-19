@@ -1,5 +1,12 @@
 # requirements:
 
+# menu:
+# interval of writing records
+# delayed start
+# auto if local/remote or if set to local all the time
+# list the records
+# 
+
 import os
 import glob
 import time
@@ -303,8 +310,14 @@ def move_records_to_remote_db():
         records = cursor.fetchall()
         close_connection()
     except (Exception, psycopg2.Error) as error:
-        print("Error while moving records to remote PostgreSQL", error)
+        print("Error while fetching records from local PostgreSQL", error)
         close_connection()
+        return  # Exit the function if an error occurs or no records are found
+
+    # If there are no records, skip the entire function
+    if not records:
+        print("No records found in local database. Skipping the function.")
+        return
 
     open_connection("remote")
     try:
@@ -314,12 +327,11 @@ def move_records_to_remote_db():
             cursor.execute(postgres_insert_query, record)    
         connection.commit()
         close_connection()
+        delete_all_records("local")  # This line should be inside the try block
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
-    # this needs to be done better with only deleting when insert above was without error    
-    delete_all_records("local")
-
+        
  
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
