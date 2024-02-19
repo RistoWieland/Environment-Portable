@@ -559,13 +559,21 @@ while True:
         db_location = ""
         record_interval_str = ""
 
-    # display result to display
-    draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
-    draw.text((5, 25), temperature_str + '°C ', font=font_2, fill = font_color)
-    draw.text((5, 74), 'Int : '+ record_interval_str, font=font_1, fill = "WHITE")
-    draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
-    draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
-    LCD.LCD_ShowImage(image,0,0)
+    # Check if the display sleep time has passed
+    display_sleep_time = settings_reading("display_sleep")
+    if time.time() - display_sleep_last_upload_time >= display_sleep_time:
+        display_sleep_time_elapsed = True
+    else:
+        display_sleep_time_elapsed = False
+
+    # display result to display if not in sleep mode
+    if not display_sleep_time_elapsed:
+        draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
+        draw.text((5, 25), temperature_str + '°C ', font=font_2, fill = font_color)
+        draw.text((5, 74), 'Int : '+ record_interval_str, font=font_1, fill = "WHITE")
+        draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
+        draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
+        LCD.LCD_ShowImage(image,0,0)
 
     # Check if the record interval time has passed
     if time.time() - recording_last_upload_time >= record_interval:
@@ -586,6 +594,7 @@ while True:
 
     # check if Key3 is pressed or battery power is smaller than 5%. If so then shutdown system
     if LCD.digital_read(LCD.GPIO_KEY3_PIN) == 1 or p < 5: 
+       display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
        print ("System Shutdown")
        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
        draw = ImageDraw.Draw(image)
@@ -597,6 +606,7 @@ while True:
 
     # check if Key2 is pressed. If so then stop recording
     if LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
+        display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         print ("Delete all records locally and remotely")
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
@@ -610,6 +620,7 @@ while True:
 
     # check if Key1 is pressed then toggle between recording and not recording
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
+        display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         recording = not recording
         toggle -= 1
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
@@ -617,6 +628,7 @@ while True:
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
+        display_sleep_time_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         setting_menu(main_menu)
 
 
