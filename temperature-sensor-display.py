@@ -474,6 +474,7 @@ def backup_menu(menu):
 
 def setting_menu(menu):
     first_time_in_menu = True
+    selected_leaf = None  # Variable to store the index of the selected leaf node
     while True:
         menu_items = list(menu.keys())
         num_items = len(menu_items)
@@ -493,7 +494,7 @@ def setting_menu(menu):
                 item_name = menu_items[index]
                 fill_color = "WHITE" if index == selected_index else "GRAY"
                 if index == selected_index and not isinstance(menu[item_name], dict):
-                    fill_color = "GREEN"  # Change color to green for leaf nodes when selected
+                    fill_color = "GREEN" if selected_leaf == index else "WHITE"
                 draw.text((5, 10 + i * 20), item_name, font=font_4, fill=fill_color)
 
             # Display the selection rectangle
@@ -533,6 +534,8 @@ def setting_menu(menu):
                     setting_menu(action)
                 elif callable(action):  # If it's a function, execute it
                     action()
+                if selected_leaf is None:
+                    selected_leaf = selected_index
 
             time.sleep(0.2)  # Debounce button press
 
