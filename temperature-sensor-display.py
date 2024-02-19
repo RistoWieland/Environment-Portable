@@ -354,37 +354,44 @@ def read_temp():
 main_menu = {
     "Settings": {
         "Record Interval": {
-            "30sec",
-            "1min",
-            "2min",
-            "5min",
-            "10min",
-            "15min",
-            "30min",
-            "60min"
+            "30sec": None,
+            "1min": None,
+            "2min": None,
+            "5min": None,
+            "10min": None,
+            "15min": None,
+            "30min": None,
+            "60min": None,
+            "Back": None
         },
         "Display Sleep": {
-            "Never",
-            "1min",
-            "2min",
-            "5min",
-            "10min",
-            "15min",
-            "30min",
-            "60min"
+            "Never": None,
+            "1min": None,
+            "2min": None,
+            "5min": None,
+            "10min": None,
+            "15min": None,
+            "30min": None,
+            "60min": None,
+            "Back": None
         },
         "Recording Delay": {
-            "No",
-            "1min",
-            "2min",
-            "5min",
-            "10min",
-            "15min",
-            "30min",
-            "60min"
-        }
-    }
+            "No": None,
+            "1min": None,
+            "2min": None,
+            "5min": None,
+            "10min": None,
+            "15min": None,
+            "30min": None,
+            "60min": None,
+            "Back": None
+        },
+        "Back": None
+    },
+    "List Records": None,
+    "Back": None
 }
+
 
 
 def setting_menu(menu):
@@ -436,7 +443,7 @@ def setting_menu(menu):
 
             time.sleep(0.2)  # Debounce button press
 
-            
+
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
