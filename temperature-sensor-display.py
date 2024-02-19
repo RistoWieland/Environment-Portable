@@ -492,8 +492,8 @@ def setting_menu(menu):
             for i, index in enumerate(range(start_index, end_index)):
                 item_name = menu_items[index]
                 fill_color = "WHITE" if index == selected_index else "GRAY"
-                if isinstance(menu[item_name], dict) and index == selected_index:
-                    fill_color = "GREEN"  # Change color to green for items with submenus when selected
+                if index == selected_index and not isinstance(menu[item_name], dict):
+                    fill_color = "GREEN"  # Change color to green for leaf nodes when selected
                 draw.text((5, 10 + i * 20), item_name, font=font_4, fill=fill_color)
 
             # Display the selection rectangle
