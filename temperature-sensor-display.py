@@ -527,6 +527,8 @@ toggle = 3
 # writing to db and if yes to local or remote
 db_location = ""
 
+# set display sleep timer
+display_sleep_time_last_upload_time = time.time()  
 
 while True:
     # clear screen
