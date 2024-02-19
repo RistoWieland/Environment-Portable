@@ -437,7 +437,7 @@ while True:
        subprocess.run(["sudo", "shutdown", "-h", "now"])
 
     # check if Key2 is pressed. If so then stop recording
-    elif LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
+    if LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
         print ("Delete all records locally and remotely")
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
@@ -450,11 +450,11 @@ while True:
         delete_all_records("remote")
 
     # check if Key1 is pressed then toggle between recording and not recording
-    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
+    if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
         recording = not recording
         toggle -= 1
         print(toggle)
-    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
+    if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
         toggle == 3
         print(toggle)
 
