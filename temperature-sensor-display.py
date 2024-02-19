@@ -603,8 +603,9 @@ while True:
             print ("System Shutdown")
             image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
             draw = ImageDraw.Draw(image)
-            draw.text((5, 0), 'System', font=font_3, fill = "YELLOW")
-            draw.text((5, 40), 'Shutdown', font=font_3, fill = "YELLOW")
+            draw.text((5, 10), 'System', font=font_3, fill = "YELLOW")
+            draw.text((5, 50), 'Shut', font=font_3, fill = "YELLOW")
+            draw.text((5, 90), 'Down', font=font_3, fill = "YELLOW")
             LCD.LCD_ShowImage(image,0,0)
             time.sleep(3)
             subprocess.run(["sudo", "shutdown", "-h", "now"])
@@ -626,12 +627,12 @@ while True:
 
     # check if Key1 is pressed then toggle between recording and not recording
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
+        display_sleep_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
         if not display_sleep_time_elapsed:
-            display_sleep_last_upload_time = time.time()  # Update timestamp to get out of display sleep 
             recording = not recording
             toggle -= 1
-        if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
-            toggle = 3
+    if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
+        toggle = 3
 
     # check if center button of joystick is pressed
     if LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1: # central button is pressed
