@@ -490,6 +490,8 @@ LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
+image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+draw = ImageDraw.Draw(image)
 
 # Load a font
 font_path = "/home/kermit/Environment-Portable/JMH Typewriter-Bold.ttf"
@@ -571,11 +573,10 @@ while True:
         draw.text((5, 74), 'Int : '+ record_interval_str, font=font_1, fill = "WHITE")
         draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
         draw.text((5, 110), 'Bat: '+ battery + '%', font=font_1, fill = "WHITE")
-        LCD.LCD_ShowImage(image,0,0)
     else: # if in sleep then black out display until a key is hit
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
-        LCD.LCD_ShowImage(image,0,0)
+    LCD.LCD_ShowImage(image,0,0)
 
     # Check if the record interval time has passed
     if time.time() - recording_last_upload_time >= record_interval:
