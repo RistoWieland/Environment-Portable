@@ -286,7 +286,7 @@ def insert_records(db, temperature):
 def check_network_connection():
     try:
         # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.8", 53), timeout=5)
+        socket.create_connection(("8.8.8.1", 53), timeout=5)
         return True
     except OSError:
         return False
@@ -314,9 +314,9 @@ def move_records_to_remote_db():
         close_connection()
         return  # Exit the function if an error occurs or no records are found
 
-    # If there are no records, skip the entire function
+    # If there are no records, skip the rest of the function
     if not records:
-        print("No records found in local database. Skipping the function.")
+        print("No records found in local database. Skipping the rest of the function.")
         return
 
     open_connection("remote")
@@ -331,7 +331,7 @@ def move_records_to_remote_db():
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
-        
+
  
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
