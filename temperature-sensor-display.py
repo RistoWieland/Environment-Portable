@@ -453,8 +453,6 @@ while True:
     elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1 and toggle > 2:
         recording = not recording
         toggle =- 1
-        if toggle == 0:
-            toggle ==3
     elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
         toggle == 3
 
