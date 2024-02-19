@@ -357,6 +357,32 @@ def read_temp():
         temp_c = round(float(temp_string) / 1000.0, 1)
         return temp_c
 
+def setting_menu():
+    while True:
+        # clear screen
+        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+        draw = ImageDraw.Draw(image)
+        if disp.digital_read(disp.GPIO_KEY_UP_PIN ) == 1: # button is released       
+            draw.polygon([(20, 20), (30, 2), (40, 20)], outline=255, fill=0xff00)  #Up      
+
+
+        if disp.digital_read(disp.GPIO_KEY_LEFT_PIN) == 1: # button is released
+            draw.polygon([(0, 30), (18, 21), (18, 41)], outline=255, fill=0xff00)  #left      
+
+
+        if disp.digital_read(disp.GPIO_KEY_RIGHT_PIN) == 1: # button is released
+            draw.polygon([(60, 30), (42, 21), (42, 41)], outline=255, fill=0xff00) #right
+        
+
+        if disp.digital_read(disp.GPIO_KEY_DOWN_PIN) == 1: # button is released
+            draw.polygon([(30, 60), (40, 42), (20, 42)], outline=255, fill=0xff00) #down   
+        
+
+        if disp.digital_read(disp.GPIO_KEY_PRESS_PIN) == 1: # button is pressed
+            return        
+        LCD.LCD_ShowImage(image,0,0)
+
+
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
@@ -473,6 +499,10 @@ while True:
         toggle -= 1
     if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
         toggle = 3
+
+    # check if center button of joystick is pressed
+    if disp.digital_read(disp.GPIO_KEY_PRESS_PIN) == 1: # button is released
+        setting_menu()
 
 
 
