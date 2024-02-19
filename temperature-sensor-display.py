@@ -402,7 +402,7 @@ while True:
         insert_records("local", temperature)
 
     # check if Key3 is pressed or battery power is smaller than 5%. If so then shutdown system
-    if LCD.digital_read(LCD.GPIO_KEY1_PIN) == 3 or p < 5: 
+    if LCD.digital_read(LCD.GPIO_KEY3_PIN) == 1 or p < 5: 
        print ("System Shutdown")
        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
        draw = ImageDraw.Draw(image)
@@ -414,11 +414,11 @@ while True:
        subprocess.run(["sudo", "shutdown", "-h", "now"])
 
     # check if Key2 is pressed. If so then stop recording
-    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 2:
+    elif LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
         recording = False
 
     # check if Key1 is pressed. If so then start recording
-    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1:
+    elif LCD.digital_read(LCD.GPIO_KEY1s_PIN) == 1:
         recording = True
 
     time.sleep(5)
