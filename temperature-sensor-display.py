@@ -350,18 +350,29 @@ def read_temp():
         temp_c = round(float(temp_string) / 1000.0, 1)
         return temp_c
 
+
+# Define functions to perform actions based on selected menu items
+def set_record_interval(interval):
+    # Write the selected interval to the config.ini file
+    config = configparser.ConfigParser()
+    config.read('/home/kermit/Config/config.ini/config.ini')
+    config['settings']['record_interval'] = interval
+    with open('/home/kermit/Config/config.ini/config.ini', 'w') as configfile:
+        config.write(configfile)
+        
+
 # Define menu items and structure
 main_menu = {
     "Settings": {
         "Record Interval": {
-            "30sec": None,
-            "1min": None,
-            "2min": None,
-            "5min": None,
-            "10min": None,
-            "15min": None,
-            "30min": None,
-            "60min": None
+            "30sec": lambda: set_record_interval(30),
+            "1min": lambda: set_record_interval(60),
+            "2min": lambda: set_record_interval(120),
+            "5min": lambda: set_record_interval(300),
+            "10min": lambda: set_record_interval(600),
+            "15min": lambda: set_record_interval(900),
+            "30min": lambda: set_record_interval(1800),
+            "60min": lambda: set_record_interval(3600)
         },
         "Display Sleep": {
             "Never": None,
