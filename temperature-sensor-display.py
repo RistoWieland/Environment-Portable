@@ -388,55 +388,57 @@ main_menu = {
 
 
 def setting_menu(menu):
-    menu_items = list(menu.keys())
-    num_items = len(menu_items)
-    selected_index = 0  # Start with the first item selected
-
     while True:
-        # Clear screen
-        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-        draw = ImageDraw.Draw(image)
+        menu_items = list(menu.keys())
+        num_items = len(menu_items)
+        selected_index = 0  # Start with the first item selected
 
-        # Determine the range of items to display (5 items in the middle)
-        start_index = max(0, selected_index - 2)
-        end_index = min(num_items, selected_index + 3)
+        while True:
+            # Clear screen
+            image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+            draw = ImageDraw.Draw(image)
 
-        # Display menu items
-        for i, index in enumerate(range(start_index, end_index)):
-            item_name = menu_items[index]
-            fill_color = "WHITE" if i == 2 else "GRAY"  # Highlight selected item
-            draw.text((5, 10 + i * 30), item_name, font=font_1, fill=fill_color)
+            # Determine the range of items to display (5 items in the middle)
+            start_index = max(0, selected_index - 2)
+            end_index = min(num_items, selected_index + 3)
 
-        # Display the selection rectangle
-        selection_rect_y = 10 + (selected_index - start_index) * 30
-        draw.rectangle([(0, selection_rect_y), (LCD.width, selection_rect_y + 30)], outline="YELLOW")
+            # Display menu items
+            for i, index in enumerate(range(start_index, end_index)):
+                item_name = menu_items[index]
+                fill_color = "WHITE" if i == 2 else "GRAY"  # Highlight selected item
+                draw.text((5, 10 + i * 30), item_name, font=font_1, fill=fill_color)
 
-        # Show the image on the LCD
-        LCD.LCD_ShowImage(image, 0, 0)
+            # Display the selection rectangle
+            selection_rect_y = 10 + (selected_index - start_index) * 30
+            draw.rectangle([(0, selection_rect_y), (LCD.width, selection_rect_y + 30)], outline="YELLOW")
 
-        # Check button input
-        if LCD.digital_read(LCD.GPIO_KEY_UP_PIN) == 1:  # Button up is pressed
-            selected_index = (selected_index - 1) % num_items
-        elif LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN) == 1:  # Button down is pressed
-            selected_index = (selected_index + 1) % num_items
-        elif LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1:  # Button left is pressed
-            return  # Go one level higher
-        elif LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1:  # Button right is pressed
-            selected_item = menu_items[selected_index]
-            submenu = menu[selected_item]
-            if isinstance(submenu, dict):  # If submenu exists, go one level deeper
-                setting_menu(submenu)
-            elif submenu == "Back":  # If it's a "Back" option, go one level higher
-                return
-        elif LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:  # Button center is pressed
-            selected_item = menu_items[selected_index]
-            action = menu[selected_item]
-            if isinstance(action, dict):  # If it's a submenu, go one level deeper
-                setting_menu(action)
-            elif callable(action):  # If it's a function, execute it
-                action()
+            # Show the image on the LCD
+            LCD.LCD_ShowImage(image, 0, 0)
 
-        time.sleep(0.2)  # Debounce button press
+            # Check button input
+            if LCD.digital_read(LCD.GPIO_KEY_UP_PIN) == 1:  # Button up is pressed
+                selected_index = (selected_index - 1) % num_items
+            elif LCD.digital_read(LCD.GPIO_KEY_DOWN_PIN) == 1:  # Button down is pressed
+                selected_index = (selected_index + 1) % num_items
+            elif LCD.digital_read(LCD.GPIO_KEY_RIGHT_PIN) == 1:  # Button right is pressed
+                if isinstance(menu[menu_items[selected_index]], dict):  # If submenu exists, go one level deeper
+                    menu = menu[menu_items[selected_index]]
+                    break  # Break out of the inner loop to display the new submenu
+            elif LCD.digital_read(LCD.GPIO_KEY_LEFT_PIN) == 1:  # Button left is pressed
+                return  # Go one level higher
+            elif LCD.digital_read(LCD.GPIO_KEY_PRESS_PIN) == 1:  # Button center is pressed
+                selected_item = menu_items[selected_index]
+                action = menu[selected_item]
+                if isinstance(action, dict):  # If it's a submenu, go one level deeper
+                    setting_menu(action)
+                elif callable(action):  # If it's a function, execute it
+                    action()
+
+            time.sleep(0.2)  # Debounce button press
+
+# Initial call to start the setting menu
+setting_menu(main_menu)
+
 
 
 LCD = LCD_1in44.LCD()
