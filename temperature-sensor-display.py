@@ -455,6 +455,8 @@ while True:
         toggle =- 1
         if toggle == 0:
             toggle ==3
+    elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 0:
+        toggle == 3
 
 
 
