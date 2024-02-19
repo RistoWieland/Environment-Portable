@@ -484,7 +484,6 @@ def setting_menu(menu):
             time.sleep(0.1)  # Debounce button press
 
 
-
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
