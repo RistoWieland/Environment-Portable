@@ -409,7 +409,7 @@ while True:
     # display result to display
     draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
     draw.text((5, 30), temperature_str+'°C ', font=font_2, fill = font_color)
-    draw.text((5, 80), 'DB Location: '+db_location, font=font_1, fill = "WHITE")
+    draw.text((5, 80), 'DB : '+db_location, font=font_1, fill = "WHITE")
     draw.text((5, 105), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
 
