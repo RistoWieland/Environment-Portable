@@ -1,6 +1,5 @@
 # requirements:
 
-
 import os
 import glob
 import time
@@ -365,6 +364,12 @@ ina219 = INA219(addr=0x43)
 # after boot the results should not be written by default
 recording = False
 
+# Initialize variables for timestamp and flag
+recording_last_upload_time = time.time()  # Get current timestamp
+recording_time_elapsed = False
+# set recording to db interval in seconds
+recording_interval = 60 
+
 while True:
     # clear screen
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
@@ -396,13 +401,20 @@ while True:
     draw.text((5, 100), 'Bat: '+battery+'%', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
 
+    # Check if one minute has passed
+    if time.time() - recording_last_upload_time >= recording_interval:
+        recording_time_elapsed = True
+        recording_last_upload_time = time.time()  # Update timestamp
+
     # check if network connection then write results remote and synch database local to remote. 
     # if no network connection then write result local
-    if check_network_connection() and recording:
+    if check_network_connection() and recording and recording_time_elapsed:
         insert_records("remote", temperature)
         move_records_to_remote_db()
-    elif recording:
+        recording_time_elapsed = False
+    elif recording and recording_time_elapsed:
         insert_records("local", temperature)
+        recording_time_elapsed = False
 
     # check if Key3 is pressed or battery power is smaller than 5%. If so then shutdown system
     if LCD.digital_read(LCD.GPIO_KEY3_PIN) == 1 or p < 5: 
@@ -420,9 +432,9 @@ while True:
     elif LCD.digital_read(LCD.GPIO_KEY2_PIN) == 1:
         recording = False
 
-    # check if Key1 is pressed. If so then start recording
+    # check if Key1 is pressed then toggle between recording and not recording
     elif LCD.digital_read(LCD.GPIO_KEY1_PIN) == 1:
-        recording = True
+        recording = not recording
 
 
 
