@@ -567,7 +567,7 @@ while True:
     # check if recording. If so then change the color to green. If no recording then change color to red
     if recording:
         font_color = "GREEN"
-        record_interval_str = str(record interval)
+        record_interval_str = str(record_interval)
     if not recording:
         font_color = "RED"
         db_location = ""
