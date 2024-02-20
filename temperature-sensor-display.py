@@ -14,6 +14,11 @@ import psycopg2
 import socket
 import configparser
 
+
+# write this version number of this script into the config file
+set_config("version", "v1.0")
+
+
 # Config Register (R/W)
 _REG_CONFIG                 = 0x00
 # SHUNT VOLTAGE REGISTER (R)
@@ -339,6 +344,7 @@ def read_temp_raw():
     f.close()
     return lines
  
+
 def read_temp():
     lines = read_temp_raw()
     while lines[0].strip()[-3:] != 'YES':
@@ -351,7 +357,7 @@ def read_temp():
         return temp_c
 
 
-def set_config(which_setting, interval):
+def set_config(which_setting, value):
     # Read existing config or create a new one
     config = configparser.ConfigParser()
     config.read(config_file)
@@ -360,8 +366,8 @@ def set_config(which_setting, interval):
     if 'settings' not in config:
         config['settings'] = {}
 
-    # Set the record_interval key in the 'settings' section
-    config['settings'][which_setting] = interval
+    # Set the corresponding setting value
+    config['settings'][which_setting] = value
 
     # Write the updated config to the file
     with open(config_file, 'w') as configfile:
