@@ -6,12 +6,6 @@ import git
 import os
 import time
 
-
-import subprocess
-import git
-import os
-import time
-
 # Define the path to your local repository
 repo_path = '/home/kermit/Environment-Portable/'
 
