@@ -15,7 +15,8 @@ import socket
 import configparser
 
 # here I keep track of which version this script is
-script_version = "v1.0"
+script_version = "v1.01"
+release_notes ="changed the config file config.ini and added release notes"
 
 
 # Config Register (R/W)
@@ -539,6 +540,9 @@ display_sleep_last_upload_time = time.time()
 
 # write this version number of this script into the config file
 set_config("version", script_version)
+# write release notes into the config file
+set_config("release notes", release_notes)
+
 
 while True:
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
