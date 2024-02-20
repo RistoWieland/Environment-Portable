@@ -373,29 +373,36 @@ def set_config(which_setting, value):
         config.write(configfile)
 
 
+def settings_reading(which_setting):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    setting_value = int(config["settings"][which_setting])
+    return setting_value
+
+
 # Define menu items and structure
 main_menu = {
     "Settings": {
         "Record Interval": {
-            "10sec": lambda: set_config('record_interval','10'),
-            "30sec": lambda: set_config('record_interval','30'),
-            "1min": lambda: set_config('record_interval','60'),
-            "2min": lambda: set_config('record_interval','120'),
-            "5min": lambda: set_config('record_interval','300'),
-            "10min": lambda: set_config('record_interval','600'),
-            "15min": lambda: set_config('record_interval','900'),
-            "30min": lambda: set_config('record_interval','1800'),
-            "60min": lambda: set_config('record_interval','3600')
+            "10sec": lambda: set_config('record interval','10'),
+            "30sec": lambda: set_config('record interval','30'),
+            "1min": lambda: set_config('record interval','60'),
+            "2min": lambda: set_config('record interval','120'),
+            "5min": lambda: set_config('record interval','300'),
+            "10min": lambda: set_config('record interval','600'),
+            "15min": lambda: set_config('record interval','900'),
+            "30min": lambda: set_config('record interval','1800'),
+            "60min": lambda: set_config('record interval','3600')
         },
         "Display Sleep": {
-            "Never":lambda: set_config('display_sleep','0'),
-            "1min": lambda: set_config('display_sleep','60'),
-            "2min": lambda: set_config('display_sleep','120'),
-            "5min": lambda: set_config('display_sleep','300'),
-            "10min": lambda: set_config('display_sleep','600'),
-            "15min": lambda: set_config('display_sleep','900'),
-            "30min": lambda: set_config('display_sleep','1800'),
-            "60min": lambda: set_config('display_sleep','3600'),
+            "Never":lambda: set_config('display sleep','0'),
+            "1min": lambda: set_config('display sleep','60'),
+            "2min": lambda: set_config('display sleep','120'),
+            "5min": lambda: set_config('display sleep','300'),
+            "10min": lambda: set_config('display sleep','600'),
+            "15min": lambda: set_config('display sleep','900'),
+            "30min": lambda: set_config('display sleep','1800'),
+            "60min": lambda: set_config('display sleep','3600'),
         },
         "Recording Delay": {
             "No": None,
@@ -407,6 +414,7 @@ main_menu = {
             "30min": None,
             "60min": None
         },
+        "Version": lambda: settings_reading('version'),
         "Back": None
     },
     "List Records": None,
@@ -484,13 +492,6 @@ def setting_menu(menu):
             time.sleep(0.1)  # Debounce button press
 
 
-def settings_reading(which_setting):
-    config = configparser.ConfigParser()
-    config.read(config_file)
-    setting_value = int(config["settings"][which_setting])
-    return setting_value
-
-
 # initalizing LCD
 LCD = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
@@ -524,7 +525,7 @@ config_file = '/home/kermit/Config/config.ini'
 recording = False
 
 # Initialize variables for timestamp and flag
-recording_last_upload_time = time.time() - settings_reading("record_interval") # Get current timestamp minus interval to start recording immediately
+recording_last_upload_time = time.time() - settings_reading("record interval") # Get current timestamp minus interval to start recording immediately
 recording_time_elapsed = False
 
 # used to not toggle between start recording and stop recording too fast
@@ -557,19 +558,19 @@ while True:
     temperature_str = str(temperature)
 
     # reading the record interval from the config file
-    record_interval = settings_reading("record_interval")
+    record_interval = settings_reading("record interval")
 
     # check if recording. If so then change the color to green. If no recording then change color to red
     if recording:
         font_color = "GREEN"
-        record_interval_str = str(record_interval)
+        record_interval_str = str(record interval)
     if not recording:
         font_color = "RED"
         db_location = ""
         record_interval_str = ""
 
     # Check if the display sleep time has passed
-    display_sleep_time = settings_reading("display_sleep")
+    display_sleep_time = settings_reading("display sleep")
     if time.time() - display_sleep_last_upload_time >= display_sleep_time and display_sleep_time > 0:
         display_sleep_time_elapsed = True
     else:
