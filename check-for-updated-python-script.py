@@ -7,11 +7,19 @@ import os
 import time
 
 
+import subprocess
+import git
+import os
+import time
+
 # Define the path to your local repository
 repo_path = '/home/kermit/Environment-Portable/'
 
 # Define the path where your Python script is stored on the Raspberry Pi
 script_path = '/home/kermit/Environment-Portable/'
+
+# Define the name of the Python script to be updated
+script_name = 'temperature-display.py'
 
 # Define the name of the systemctl service
 service_name = 'temperature-display.service'
@@ -41,9 +49,10 @@ def download_update():
     repo = git.Repo(repo_path)
     repo.git.pull()
 
-    # Copy or move the updated script to the specified location
-    # shutil.copy2(repo_path, script_path)  # Assuming script_path is the full path including the script name
-
+    # Copy the updated script to the specified location
+    source_file = os.path.join(repo_path, script_name)
+    destination_file = os.path.join(script_path, script_name)
+    shutil.copy2(source_file, destination_file)
 
 def restart_service():
     # Restart the systemctl service
