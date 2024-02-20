@@ -14,9 +14,8 @@ import psycopg2
 import socket
 import configparser
 
-
-# write this version number of this script into the config file
-set_config("version", "v1.0")
+# here I keep track of which version this script is
+script_version = "v1.0"
 
 
 # Config Register (R/W)
@@ -536,6 +535,9 @@ db_location = ""
 
 # set display sleep timer
 display_sleep_last_upload_time = time.time()  
+
+# write this version number of this script into the config file
+set_config("version", script_version)
 
 while True:
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
