@@ -582,7 +582,7 @@ while True:
 
     # display result to display if not in sleep mode
     if not display_sleep_time_elapsed:
-        draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "WHITE")
+        draw.text((5, 0), 'Temperatur: ', font=font_1, fill = "BLUE")
         draw.text((5, 25), temperature_str + '°C ', font=font_2, fill = font_color)
         draw.text((5, 74), 'Int : '+ record_interval_str, font=font_1, fill = "WHITE")
         draw.text((5, 92), 'DB : '+ db_location, font=font_1, fill = "WHITE")
