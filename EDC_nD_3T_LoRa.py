@@ -183,12 +183,13 @@ def read_temp(index):
 
 
 
-create_table("local", settings_reading("local","table"))
+# create_table("local", settings_reading("local","table"))
 
-temp = []  # Initialize an empty list
+number_of_sensors = settings_reading("settings", "number sensors")
 
 while True:
-    for i in range(3):
+    temp = []  # Initialize an empty list
+    for i in range(number_of_sensors):
         value = read_temp(i)
         temp.append(value)
     insert_records("local", temp)
