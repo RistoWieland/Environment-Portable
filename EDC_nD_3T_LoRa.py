@@ -191,3 +191,4 @@ while True:
     for i in range(3):
         temp[i] = read_temp(i)
     insert_records(temp)
+    time.sleep(60)
