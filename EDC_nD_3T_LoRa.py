@@ -5,6 +5,12 @@ import psycopg2
 import socket
 import configparser
 
+global config_file
+config_file = '/home/statler/Config/config.ini'
+
+# here I keep track of which version this script is
+script_version = "v1.01"
+release_notes ="changed the config file config.ini and added release notes"
 
 def settings_reading(which_section, which_parameter):
     config = configparser.ConfigParser()
