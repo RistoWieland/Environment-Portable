@@ -82,10 +82,12 @@ def drop_table():
         close_connection()
 
 
-
 def insert_records(db, temperatures):
     open_connection(db)
-    try: 
+    try:
+        connection = psycopg2.connect(db)
+        cursor = connection.cursor()
+
         # Round timestamp to zero seconds
         dt = datetime.now().replace(second=0, microsecond=0)
 
@@ -98,11 +100,8 @@ def insert_records(db, temperatures):
             VALUES (%s, {temperature_placeholders})
         """
         
-        # Flatten the temperatures list if it's nested
-        flattened_temperatures = [temp for sublist in temperatures for temp in sublist]
-
-        # Record to insert including rounded timestamp and flattened temperatures
-        record_to_insert = [dt, *flattened_temperatures]
+        # Record to insert including rounded timestamp and temperatures
+        record_to_insert = [dt, *temperatures]
 
         cursor.execute(postgres_insert_query, record_to_insert)
         connection.commit()
