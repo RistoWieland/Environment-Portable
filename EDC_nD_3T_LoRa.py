@@ -187,8 +187,11 @@ def read_temp(index):
 
 # create_table("local", settings_reading("local","table"))
 
+temp = []  # Initialize an empty list
+
 while True:
     for i in range(3):
-        temp[i] = read_temp(i)
+        value = read_temp(i)
+        temp.append(value)
     insert_records(temp)
     time.sleep(60)
