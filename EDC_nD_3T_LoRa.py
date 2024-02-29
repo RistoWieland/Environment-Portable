@@ -1,0 +1,165 @@
+import os
+import glob
+import time
+import psycopg2
+import socket
+import configparser
+
+
+def settings_reading(which_section, which_parameter):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    setting_value = int(config[which_section][which_parameter])
+    return setting_value
+
+
+def open_connection(db): 
+    global connection
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    connection = psycopg2.connect(user = config[db]["user"],
+                                  password = config[db]["password"],
+                                  host = config[db]["host"],
+                                  port = config[db]["port"],
+                                  database = config[db]["database"])
+    global cursor
+    cursor = connection.cursor()
+
+
+def close_connection():
+    cursor.close()
+    connection.close()
+
+
+def create_table(db, table_name):
+    open_connection(db)
+    
+    try:
+        create_table_query = f'''
+            CREATE TABLE {table_name} (
+                timeStamp TIMESTAMP,
+                t0 REAL,
+                t1 REAL,
+                t2 REAL 
+            );
+        '''
+        
+        cursor.execute(create_table_query)
+        connection.commit()
+        close_connection()
+        
+    except Exception as err:
+        print ("Table ", table_name, "already exists")
+        close_connection()
+
+    else:
+        print("Table ", table_name, " created successfully in PostgreSQL")
+        close_connection()
+
+
+def drop_table():
+    open_connection()
+    
+    try:
+        cursor.execute("Drop table pfannenstiel;")
+        connection.commit()
+        close_connection()
+        
+    except (Exception, psycopg2.Error) as error:
+        print ("Table pfannenstiel does not exists")
+        print ("Error while connecting to PostgreSQL", error)
+        close_connection()
+
+    else:
+        print("Table pfannenstiel dropped successfully in PostgreSQL ")
+        close_connection()
+
+
+def insert_records(db, temperature):
+    open_connection(db)
+    try:
+        dt = datetime.now()
+        x = dt.replace(microsecond=0)  
+        postgres_insert_query = """ INSERT INTO pfannenstiel (timeStamp, temperature) VALUES (%s,%s)"""
+        record_to_insert = (x, temperature)
+        cursor.execute(postgres_insert_query, record_to_insert)
+        connection.commit()
+        close_connection()
+
+    except (Exception, psycopg2.Error) as error:
+        print ("Error while connecting to PostgreSQL", error)
+        close_connection()
+
+
+def check_network_connection():
+    try:
+        # Try to connect to a well-known external server
+        socket.create_connection(("8.8.8.8", 53), timeout=0.5)
+        return True
+    except OSError:
+        return False
+
+
+def delete_all_records(db):
+    open_connection(db)
+    try:
+        cursor.execute("DELETE FROM pfannenstiel;")
+        connection.commit()
+        close_connection()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while moving records to remote PostgreSQL", error)
+        close_connection()
+
+
+def move_records_to_remote_db():
+    open_connection("local")
+    try:
+        cursor.execute("SELECT * FROM pfannenstiel;")
+        records = cursor.fetchall()
+        close_connection()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while fetching records from local PostgreSQL", error)
+        close_connection()
+        return  # Exit the function if an error occurs or no records are found
+
+    # If there are no records, skip the rest of the function
+    if not records:
+        print("No records found in local database. Skipping the rest of the function.")
+        return
+
+    open_connection("remote")
+    try:
+        for record in records:
+            print(record)
+            postgres_insert_query = """ INSERT INTO pfannenstiel (timeStamp, temperature) VALUES (%s,%s)"""
+            cursor.execute(postgres_insert_query, record)    
+        connection.commit()
+        close_connection()
+        delete_all_records("local")  # This line should be inside the try block
+    except (Exception, psycopg2.Error) as error:
+        print("Error while moving records to remote PostgreSQL", error)
+        close_connection()
+
+
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
+ 
+def read_temp(index):
+    base_dir = '/sys/bus/w1/devices/'
+    device_folder = glob.glob(base_dir + '28*')[index]
+    device_file = device_folder + '/w1_slave'
+    f = open(device_file, 'r')
+    lines = f.readlines()
+    f.close()
+    while lines[0].strip()[-3:] != 'YES':
+        time.sleep(0.2)
+        lines = read_temp_raw()
+    equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+        temp_string = lines[1][equals_pos+2:]
+        temp_c = round(float(temp_string) / 1000.0, 1)
+        return temp_c
+
+
+
+create_table("local", settings_reading("local","table"))
