@@ -99,9 +99,10 @@ def insert_records(db, temperatures):
             INSERT INTO waermepumpe (timeStamp, {temperature_columns})
             VALUES (%s, {temperature_placeholders})
         """
-        
+        print(postgres_insert_query)
         # Record to insert including rounded timestamp and temperatures
         record_to_insert = [dt, *temperatures]
+        print(record_to_insert)
 
         cursor.execute(postgres_insert_query, record_to_insert)
         connection.commit()
