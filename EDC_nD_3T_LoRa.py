@@ -84,6 +84,7 @@ def drop_table():
 
 def insert_records(db, temperatures):
     open_connection(db)
+
     try:
         connection = psycopg2.connect(db)
         cursor = connection.cursor()
@@ -185,7 +186,7 @@ def read_temp(index):
 
 
 
-# create_table("local", settings_reading("local","table"))
+create_table("local", settings_reading("local","table"))
 
 temp = []  # Initialize an empty list
 
