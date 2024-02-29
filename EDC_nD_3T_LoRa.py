@@ -86,9 +86,6 @@ def insert_records(db, temperatures):
     open_connection(db)
 
     try:
-        connection = psycopg2.connect(db)
-        cursor = connection.cursor()
-
         # Round timestamp to zero seconds
         dt = datetime.now().replace(second=0, microsecond=0)
 
