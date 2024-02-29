@@ -15,8 +15,8 @@ release_notes ="changed the config file config.ini and added release notes"
 def settings_reading(which_section, which_parameter):
     config = configparser.ConfigParser()
     config.read(config_file)
-    setting_value = int(config[which_section][which_parameter])
-    return setting_value
+    reading = config[which_section][which_parameter]
+    return reading
 
 
 def open_connection(db): 
