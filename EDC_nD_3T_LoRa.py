@@ -188,6 +188,6 @@ def read_temp(index):
 # create_table("local", settings_reading("local","table"))
 
 while True:
-    for i in Range (3):
+    for i in range(3):
         temp[i] = read_temp(i)
     insert_records(temp)
