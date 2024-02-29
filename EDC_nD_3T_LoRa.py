@@ -193,5 +193,5 @@ while True:
     for i in range(3):
         value = read_temp(i)
         temp.append(value)
-    insert_records(temp)
+    insert_records("local", temp)
     time.sleep(60)
