@@ -185,7 +185,7 @@ def read_temp(index):
 
 # create_table("local", settings_reading("local","table"))
 
-number_of_sensors = settings_reading("settings", "number sensors")
+number_of_sensors = int(settings_reading("settings", "number sensors"))
 
 while True:
     temp = []  # Initialize an empty list
