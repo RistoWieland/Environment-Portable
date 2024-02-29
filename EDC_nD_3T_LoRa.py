@@ -4,6 +4,7 @@ import time
 import psycopg2
 import socket
 import configparser
+from datetime import datetime, timezone
 
 global config_file
 config_file = '/home/statler/Config/config.ini'
@@ -81,19 +82,35 @@ def drop_table():
         close_connection()
 
 
-def insert_records(db, temperature):
+
+def insert_records(db, temperatures):
     open_connection(db)
-    try:
-        dt = datetime.now()
-        x = dt.replace(microsecond=0)  
-        postgres_insert_query = """ INSERT INTO pfannenstiel (timeStamp, temperature) VALUES (%s,%s)"""
-        record_to_insert = (x, temperature)
+    try: 
+        # Round timestamp to zero seconds
+        dt = datetime.now().replace(second=0, microsecond=0)
+
+        # Prepare the insert query dynamically for each temperature column
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures)))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures)))
+
+        postgres_insert_query = f"""
+            INSERT INTO waermepumpe (timeStamp, {temperature_columns})
+            VALUES (%s, {temperature_placeholders})
+        """
+        
+        # Flatten the temperatures list if it's nested
+        flattened_temperatures = [temp for sublist in temperatures for temp in sublist]
+
+        # Record to insert including rounded timestamp and flattened temperatures
+        record_to_insert = [dt, *flattened_temperatures]
+
         cursor.execute(postgres_insert_query, record_to_insert)
         connection.commit()
+        print("Data inserted successfully!")
         close_connection()
 
     except (Exception, psycopg2.Error) as error:
-        print ("Error while connecting to PostgreSQL", error)
+        print("Error while connecting to PostgreSQL:", error)
         close_connection()
 
 
@@ -168,4 +185,9 @@ def read_temp(index):
 
 
 
-create_table("local", settings_reading("local","table"))
+# create_table("local", settings_reading("local","table"))
+
+while True:
+    for i in Range (3):
+        temp[i] = read_temp(i)
+    insert_records(temp)
