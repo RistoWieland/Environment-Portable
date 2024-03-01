@@ -232,7 +232,6 @@ def read_temp(index):
 def send_lora_data(temperatures):
     # for temperature in temperatures:
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
-    print(data)
     node.send(data)
 
 
@@ -249,7 +248,8 @@ def check_lora_data_received(sent_list):
             # Clean up the string further
             received_message = received_message.strip("'")  # Remove surrounding single quotes
             received_list = ast.literal_eval(received_message)
-            print(received_list)
+            print("sent list ", sent_list)
+            print("received list ", received_list)
             print(type(received_list))
             if received_list == sent_list:
                 return True
