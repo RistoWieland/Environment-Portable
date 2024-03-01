@@ -1,3 +1,10 @@
+# requirements:
+# sudo apt install python3-psycopg2
+#
+# Need to disable the serial login shell and have to enable serial interface 
+# command `sudo raspi-config`
+# When the LoRaHAT is attached to RPi, the M0 and M1 jumpers of HAT should be removed.
+
 import os
 import glob
 import time
@@ -5,19 +12,55 @@ import psycopg2
 import socket
 import configparser
 from datetime import datetime, timezone
+import sys
+import threading
+import select
+import termios
+import tty
+import glob
+from threading import Timer
+# sys.path.append('/home/kermit/SX126X_LoRa_HAT_Code/raspberrypi/python')
+import sx126x
 
-global config_file
-config_file = '/home/statler/Config/config.ini'
-
-# here I keep track of which version this script is
-script_version = "v1.01"
-release_notes ="changed the config file config.ini and added release notes"
 
 def settings_reading(which_section, which_parameter):
     config = configparser.ConfigParser()
     config.read(config_file)
     reading = config[which_section][which_parameter]
     return reading
+
+
+# where the config file is located and load it as global variable
+global config_file
+config_file = '/home/statler/Config/config.ini'
+
+
+# here I keep track of which version this script is
+script_version = "v1.01"
+release_notes ="changed the config file config.ini and added release notes"
+
+
+# loading from config file how many temperature sensors are attached 
+number_of_sensors = int(settings_reading("settings", "number sensors"))
+
+#   serial_num
+#       PiZero, Pi3B+, and Pi4B use "/dev/ttyS0"
+#
+#    Frequency is [850 to 930], or [410 to 493] MHz
+#
+#    address is 0 to 65535
+#        under the same frequence,if set 65535,the node can receive 
+#        messages from another node of address is 0 to 65534 and similarly,
+#        the address 0 to 65534 of node can receive messages while 
+#        the another note of address is 65535 sends.
+#        otherwise two node must be same the address and frequence
+#
+#    The tramsmit power is {10, 13, 17, and 22} dBm
+#
+#    RSSI (receive signal strength indicator) is {True or False}
+#        It will print the RSSI value when it receives each message
+#
+node = sx126x.sx126x(serial_num = "/dev/ttyS0",freq=868,addr=0,power=22,rssi=True,air_speed=2400,relay=False)
 
 
 def open_connection(db): 
@@ -47,7 +90,9 @@ def create_table(db, table_name):
                 timeStamp TIMESTAMP,
                 t0 REAL,
                 t1 REAL,
-                t2 REAL 
+                t2 REAL,
+                t3 REAL,
+                humidity REAL 
             );
         '''
         
@@ -56,29 +101,32 @@ def create_table(db, table_name):
         close_connection()
         
     except Exception as err:
-        print ("Table ", table_name, "already exists")
+        print ("Table", table_name, "already exists")
         close_connection()
 
     else:
-        print("Table ", table_name, " created successfully in PostgreSQL")
+        print("Table", table_name, "created successfully in PostgreSQL")
         close_connection()
 
 
-def drop_table():
-    open_connection()
+def drop_table(db, table_name):
+    open_connection(db)
     
     try:
-        cursor.execute("Drop table pfannenstiel;")
+        drop_table_query = f'''
+            DROP TABLE {table_name};
+            '''
+        cursor.execute(drop_table_query)
         connection.commit()
         close_connection()
         
     except (Exception, psycopg2.Error) as error:
-        print ("Table pfannenstiel does not exists")
+        print ("Table", table_name, "does not exists")
         print ("Error while connecting to PostgreSQL", error)
         close_connection()
 
     else:
-        print("Table pfannenstiel dropped successfully in PostgreSQL ")
+        print("Table", table_name, "dropped successfully in PostgreSQL")
         close_connection()
 
 
@@ -182,15 +230,21 @@ def read_temp(index):
         return temp_c
 
 
+def send_lora_data(index):
+    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + "t"+str(index)+":".encode()+str(read_temp(index)).encode()+" C".encode()
+    print(data)
+    node.send(data)
+    time.sleep(10)
 
-# create_table("local", settings_reading("local","table"))
 
-number_of_sensors = int(settings_reading("settings", "number sensors"))
+drop_table("local", settings_reading("local","table"))
+create_table("local", settings_reading("local","table"))
 
 while True:
     temp = []  # Initialize an empty list
     for i in range(number_of_sensors):
         value = read_temp(i)
         temp.append(value)
+        send_lora_data(i)
     insert_records("local", temp)
     time.sleep(60)
