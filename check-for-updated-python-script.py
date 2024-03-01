@@ -1,5 +1,6 @@
 # requirements
 # sudo pip3 install gitpython
+# sudo apt install python3-git
 # sudo chown -R root:root /home/kermit/Environment-Portable/
 # git config --global --add safe.directory '/home/kermit/Environment-Portable'
 

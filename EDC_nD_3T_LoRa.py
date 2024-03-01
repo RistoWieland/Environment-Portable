@@ -1,5 +1,6 @@
 # requirements:
 # sudo apt install python3-psycopg2
+# sudo apt install python3-serial
 #
 # Need to disable the serial login shell and have to enable serial interface 
 # command `sudo raspi-config`
@@ -19,7 +20,7 @@ import termios
 import tty
 import glob
 from threading import Timer
-# sys.path.append('/home/kermit/SX126X_LoRa_HAT_Code/raspberrypi/python')
+sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
 
 
