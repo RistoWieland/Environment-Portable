@@ -113,14 +113,15 @@ def send_deal():
 
 
 try:
+    old_settings = termios.tcgetattr(sys.stdin)
     while True:
-        node.receive()
-except:
+        received_message = node.receive()
+        if received_message is not None:
+            print("Received message:", received_message)
+except Exception as e:
+    print("Error:", e)
+finally:
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-
-
-
 
 
 
