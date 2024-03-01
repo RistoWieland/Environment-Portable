@@ -122,31 +122,6 @@ def drop_table(db, table_name):
         close_connection()
 
 
-    if db in db_params:
-        params = db_params[db]
-        try:
-            global connection
-            connection = psycopg2.connect(
-                user=params["user"],
-                password=params["password"],
-                host=params["host"],
-                port=params["port"],
-                database=params["database"],
-                # options=f'-c password_encryption=scram-sha-256',
-                sslmode=params["sslmode"]
-            )
-            global cursor
-            cursor = connection.cursor()
-            print(f"Connection to {db} database successful")
-            return
-        except (Exception, psycopg2.Error) as error:
-            print(f"Error while connecting to {db} database:", error)
-            return
-    else:
-        print(f"Database {db} not found in parameters")
-        return 
-        
-
 def insert_records(db, temperatures):
     open_connection(db)
     try:
@@ -176,7 +151,6 @@ def insert_records(db, temperatures):
         close_connection()
 
 
-
 drop_table("remote", settings_reading("remote","table"))
 create_table("remote", settings_reading("remote","table"))
 
@@ -194,7 +168,7 @@ try:
             temperatures = ast.literal_eval(received_message)
             print(temperatures)
             print(type(temperatures))
-            insert_records("db1", temperatures)
+            insert_records("remote", temperatures)
 except Exception as e:
     print("Error:", e)
 
