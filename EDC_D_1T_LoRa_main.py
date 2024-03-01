@@ -11,12 +11,12 @@ import psycopg2
 import sys
 import threading
 import time
+from datetime import datetime, timezone
 import select
 import tty
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
-
 
 
 #   serial_num
