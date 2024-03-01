@@ -76,6 +76,36 @@ def open_connection(db):
         return 
 
 
+def insert_records(db, temperatures):
+    open_connection(db)
+    try:
+        # Round timestamp to zero seconds
+        dt = datetime.now().replace(second=0, microsecond=0)
+
+        # Prepare the insert query dynamically for each temperature column
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures)))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures)))
+
+        postgres_insert_query = f"""
+            INSERT INTO waermepumpe (timeStamp, {temperature_columns})
+            VALUES (%s, {temperature_placeholders})
+        """
+        print(postgres_insert_query)
+        # Record to insert including rounded timestamp and temperatures
+        record_to_insert = [dt, *temperatures]
+        print(record_to_insert)
+
+        cursor.execute(postgres_insert_query, record_to_insert)
+        connection.commit()
+        print("Data inserted successfully!")
+        close_connection()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgreSQL:", error)
+        close_connection()
+
+
+
 try:
     while True:
         received_message = node.receive()
@@ -90,6 +120,7 @@ try:
             temperatures = ast.literal_eval(received_message)
             print(temperatures)
             print(type(temperatures))
+            insert_records("db1", temperatures)
 except Exception as e:
     print("Error:", e)
 
