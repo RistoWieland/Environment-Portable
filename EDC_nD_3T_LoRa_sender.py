@@ -276,6 +276,6 @@ while True:
         send_lora_data(temp)
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if not check_lora_data_received(temp):
-            print("sent and received is not equal")
+            print("sent and received is not equal !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             insert_records("local", temp)
     time.sleep(1)
