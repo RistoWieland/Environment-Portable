@@ -114,36 +114,9 @@ def send_deal():
 
 try:
     while True:
-
-        if select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], []):
-            c = sys.stdin.read(1)
-
-            # dectect key Esc
-            if c == '\x1b': break
-            # dectect key s
-            if c == '\x73':
-                print("Press \033[1;32mc\033[0m   to exit the send task")
-                timer_task = Timer(seconds,send_cpu_continue)
-                timer_task.start()
-                
-                while True:
-                    if sys.stdin.read(1) == '\x63':
-                        timer_task.cancel()
-                        print('\x1b[1A',end='\r')
-                        print(" "*100)
-                        print('\x1b[1A',end='\r')
-                        print("risto")
-                        break
-
-            sys.stdout.flush()
-            
-        node.receive()
-        
-        # timer,send messages automatically
-        
+        node.receive()    
 except:
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-
 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 
