@@ -76,6 +76,11 @@ def open_connection(db):
         return 
 
 
+def close_connection():
+    cursor.close()
+    connection.close()
+
+
 def insert_records(db, temperatures):
     open_connection(db)
     try:
@@ -103,7 +108,6 @@ def insert_records(db, temperatures):
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL:", error)
         close_connection()
-
 
 
 try:
