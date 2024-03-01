@@ -232,10 +232,11 @@ def read_temp(index):
 
 
 def send_lora_data(temperatures):
-    for temperature in temperatures:
-        data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + " t: ".encode() + str(temperature).encode()
-        print(data)
-        node.send(data)
+    # for temperature in temperatures:
+    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + " t: ".encode() + str(temperatures).encode()
+    print(data)
+    node.send(data)
+
 
 
 drop_table("local", settings_reading("local","table"))
@@ -248,4 +249,4 @@ while True:
         temp.append(value)
     send_lora_data(temp)
     insert_records("local", temp)
-    time.sleep(60)
+    time.sleep(30)
