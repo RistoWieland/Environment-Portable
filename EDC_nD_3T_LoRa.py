@@ -235,8 +235,6 @@ def send_lora_data(index):
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + "t".encode()+str(index).encode()+":".encode()+str(read_temp(index)).encode()+" C".encode()
     print(data)
     node.send(data)
-    time.sleep(10)
-
 
 drop_table("local", settings_reading("local","table"))
 create_table("local", settings_reading("local","table"))
