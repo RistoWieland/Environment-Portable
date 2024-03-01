@@ -114,9 +114,7 @@ def send_deal():
 
 try:
     while True:
-        message = node.receive()
-        if message != "None":
-            print("mal schauen ",message)    
+        node.receive()
 except:
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
