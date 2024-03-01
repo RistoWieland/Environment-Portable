@@ -10,6 +10,7 @@ import ast
 import psycopg2
 import sys
 import threading
+import configparser
 import time
 from datetime import datetime, timezone
 import select
@@ -17,6 +18,23 @@ import tty
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
+
+
+def settings_reading(which_section, which_parameter):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    reading = config[which_section][which_parameter]
+    return reading
+
+
+# where the config file is located and load it as global variable
+global config_file
+config_file = '/home/statler/Config/config.ini'
+
+
+# here I keep track of which version this script is
+script_version = "v1.00"
+release_notes ="changed the config file config.ini and added release notes"
 
 
 #   serial_num
@@ -38,18 +56,71 @@ import sx126x
 #
 node = sx126x.sx126x(serial_num = "/dev/ttyS0",freq=868,addr=0,power=22,rssi=True,air_speed=2400,relay=False)
 
+def open_connection(db): 
+    global connection
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    connection = psycopg2.connect(user = config[db]["user"],
+                                  password = config[db]["password"],
+                                  host = config[db]["host"],
+                                  port = config[db]["port"],
+                                  database = config[db]["database"],
+                                  sslmode = config[db]["sslmode"])
+    global cursor
+    cursor = connection.cursor()
 
-def open_connection(db):
-    db_params = {
-        "db1": {
-            "user": "postgres",
-            "password": "Qyyx7Gu39Fpo.y6!inE3wLVa9LoujK",
-            "host": "172-232-207-139.ip.linodeusercontent.com",
-            "port": "5432",
-            "database": "jupiterstrasse_env",
-            "sslmode": "verify-full"
-        }
-    }
+
+def close_connection():
+    cursor.close()
+    connection.close()
+
+
+def create_table(db, table_name):
+    open_connection(db)
+    
+    try:
+        create_table_query = f'''
+            CREATE TABLE {table_name} (
+                timeStamp TIMESTAMP,
+                t0 REAL,
+                t1 REAL,
+                t2 REAL
+            );
+        '''
+        
+        cursor.execute(create_table_query)
+        connection.commit()
+        close_connection()
+        
+    except Exception as err:
+        print ("Table", table_name, "already exists")
+        close_connection()
+
+    else:
+        print("Table", table_name, "created successfully in PostgreSQL")
+        close_connection()
+
+
+def drop_table(db, table_name):
+    open_connection(db)
+    
+    try:
+        drop_table_query = f'''
+            DROP TABLE {table_name};
+            '''
+        cursor.execute(drop_table_query)
+        connection.commit()
+        close_connection()
+        
+    except (Exception, psycopg2.Error) as error:
+        print ("Table", table_name, "does not exists")
+        print ("Error while connecting to PostgreSQL", error)
+        close_connection()
+
+    else:
+        print("Table", table_name, "dropped successfully in PostgreSQL")
+        close_connection()
+
 
     if db in db_params:
         params = db_params[db]
@@ -74,12 +145,7 @@ def open_connection(db):
     else:
         print(f"Database {db} not found in parameters")
         return 
-
-
-def close_connection():
-    cursor.close()
-    connection.close()
-
+        
 
 def insert_records(db, temperatures):
     open_connection(db)
@@ -109,6 +175,10 @@ def insert_records(db, temperatures):
         print("Error while connecting to PostgreSQL:", error)
         close_connection()
 
+
+
+drop_table("remote", settings_reading("remote","table"))
+create_table("remote", settings_reading("remote","table"))
 
 try:
     while True:

@@ -91,9 +91,7 @@ def create_table(db, table_name):
                 timeStamp TIMESTAMP,
                 t0 REAL,
                 t1 REAL,
-                t2 REAL,
-                t3 REAL,
-                humidity REAL 
+                t2 REAL
             );
         '''
         
