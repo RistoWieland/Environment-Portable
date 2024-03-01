@@ -118,7 +118,7 @@ try:
         received_message = node.receive()
         if received_message is not None:
             print("Received message:", received_message)
-            temperatures = ast.literal_eval(received_message.decode())
+            print(type(received_message))
             print(temperatures)
 except Exception as e:
     print("Error:", e)
