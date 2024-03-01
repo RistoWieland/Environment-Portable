@@ -132,6 +132,7 @@ try:
                         print('\x1b[1A',end='\r')
                         print(" "*100)
                         print('\x1b[1A',end='\r')
+                        print("risto")
                         break
 
             sys.stdout.flush()
