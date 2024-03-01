@@ -103,7 +103,7 @@ def create_table(db, table_name):
 
 def drop_table(db, table_name):
     open_connection(db)
-    
+
     try:
         drop_table_query = f'''
             DROP TABLE {table_name};
@@ -151,6 +151,13 @@ def insert_records(db, temperatures):
         close_connection()
 
 
+def send_lora_data(temperatures):
+    # for temperature in temperatures:
+    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
+    print(data)
+    node.send(data)
+
+
 drop_table("remote", settings_reading("remote","table"))
 create_table("remote", settings_reading("remote","table"))
 
@@ -169,6 +176,7 @@ try:
             print(temperatures)
             print(type(temperatures))
             insert_records("remote", temperatures)
+            send_lora_data(temperatures)
 except Exception as e:
     print("Error:", e)
 
