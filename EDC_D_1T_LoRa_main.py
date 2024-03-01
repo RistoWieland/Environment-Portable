@@ -12,14 +12,11 @@ import sys
 import threading
 import time
 import select
-import termios
 import tty
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
 
-old_settings = termios.tcgetattr(sys.stdin)
-tty.setcbreak(sys.stdin.fileno())
 
 
 #   serial_num
@@ -79,41 +76,7 @@ def open_connection(db):
         return 
 
 
-def send_deal():
-    get_rec = ""
-    print("")
-    print("input a string such as \033[1;32m0,868,Hello World\033[0m,it will send `Hello World` to lora node device of address 0 with 868M ")
-    print("please input and press Enter key:",end='',flush=True)
-
-    while True:
-        rec = sys.stdin.read(1)
-        if rec != None:
-            if rec == '\x0a': break
-            get_rec += rec
-            sys.stdout.write(rec)
-            sys.stdout.flush()
-
-    get_t = get_rec.split(",")
-
-    offset_frequence = int(get_t[1])-(850 if int(get_t[1])>850 else 410)
-    #
-    # the sending message format
-    #
-    #         receiving node              receiving node                   receiving node           own high 8bit           own low 8bit                 own 
-    #         high 8bit address           low 8bit address                    frequency                address                 address                  frequency             message payload
-    data = bytes([int(get_t[0])>>8]) + bytes([int(get_t[0])&0xff]) + bytes([offset_frequence]) + bytes([node.addr>>8]) + bytes([node.addr&0xff]) + bytes([node.offset_freq]) + get_t[2].encode()
-
-    node.send(data)
-    print('\x1b[2A',end='\r')
-    print(" "*200)
-    print(" "*200)
-    print(" "*200)
-    print('\x1b[3A',end='\r')
-    
-
-
 try:
-    old_settings = termios.tcgetattr(sys.stdin)
     while True:
         received_message = node.receive()
         if received_message is not None:
@@ -129,9 +92,6 @@ try:
             print(type(temperatures))
 except Exception as e:
     print("Error:", e)
-    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-finally:
-    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 
 
