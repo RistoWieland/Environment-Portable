@@ -236,9 +236,9 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
-
 drop_table("local", settings_reading("local","table"))
 create_table("local", settings_reading("local","table"))
+
 
 while True:
     temp = []  # Initialize an empty list
