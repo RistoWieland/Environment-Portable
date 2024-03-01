@@ -277,4 +277,4 @@ while True:
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if not check_lora_data_received(temp):
             insert_records("local", temp)
-        time.sleep(1)
+    time.sleep(1)
