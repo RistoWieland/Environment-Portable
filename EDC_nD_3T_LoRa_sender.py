@@ -236,15 +236,45 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
+def check_lora_data_received(sent_list): 
+    timer = 30
+    while timer > 0:
+        received_message = node.receive()
+        if received_message is not None:
+            print("Received message:", received_message)
+            print(type(received_message))
+            # Remove the leading 'b' character
+            if received_message.startswith('b'):
+                received_message = received_message[1:]
+            # Clean up the string further
+            received_message = received_message.strip("'")  # Remove surrounding single quotes
+            received_list = ast.literal_eval(received_message)
+            print(received_list)
+            print(type(received_list))
+            if received_list == sent_list:
+                return true
+        timer -= 1
+        time.sleep(1)
+    return false   
+
+
 drop_table("local", settings_reading("local","table"))
 create_table("local", settings_reading("local","table"))
 
+prev_minute = None  # Initialize the variable to track the previous minute
 
 while True:
-    temp = []  # Initialize an empty list
-    for i in range(number_of_sensors):
-        value = read_temp(i)
-        temp.append(value)
-    send_lora_data(temp)
-    insert_records("local", temp)
-    time.sleep(30)
+    current_minute = time.localtime().tm_min  # Get the current minute
+    if current_minute != prev_minute:
+        # Update the previous minute
+        prev_minute = current_minute 
+        # Initialize an empty list
+        temp = []  
+        for i in range(number_of_sensors):
+            value = read_temp(i)
+            temp.append(value)
+        send_lora_data(temp)
+        # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
+        if not check_lora_data_received(temp):
+            insert_records("local", temp)
+        time.sleep(1)
