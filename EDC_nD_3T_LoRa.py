@@ -232,7 +232,7 @@ def read_temp(index):
 
 
 def send_lora_data(index):
-    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + "t"+str(index)+":".encode()+str(read_temp(index)).encode()+" C".encode()
+    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + "t".encode()+str(index).encode()+":".encode()+str(read_temp(index)).encode()+" C".encode()
     print(data)
     node.send(data)
     time.sleep(10)
