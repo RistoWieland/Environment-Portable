@@ -252,10 +252,10 @@ def check_lora_data_received(sent_list):
             print(received_list)
             print(type(received_list))
             if received_list == sent_list:
-                return true
+                return True
         timer -= 1
         time.sleep(1)
-    return false   
+    return False   
 
 
 drop_table("local", settings_reading("local","table"))
