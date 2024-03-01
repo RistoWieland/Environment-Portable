@@ -113,14 +113,6 @@ def send_deal():
 
 
 try:
-    time.sleep(1)
-    print("Press \033[1;32mEsc\033[0m to exit")
-    print("Press \033[1;32mi\033[0m   to send")
-    print("Press \033[1;32ms\033[0m   to send cpu temperature every 10 seconds")
-    
-    # it will send rpi cpu temperature every 10 seconds 
-    seconds = 10
-    
     while True:
 
         if select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], []):
@@ -128,9 +120,6 @@ try:
 
             # dectect key Esc
             if c == '\x1b': break
-            # dectect key i
-            if c == '\x69':
-                send_deal()
             # dectect key s
             if c == '\x73':
                 print("Press \033[1;32mc\033[0m   to exit the send task")
@@ -153,16 +142,9 @@ try:
         
 except:
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-    # print('\x1b[2A',end='\r')
-    # print(" "*100)
-    # print(" "*100)
-    # print('\x1b[2A',end='\r')
 
 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-# print('\x1b[2A',end='\r')
-# print(" "*100)
-# print(" "*100)
-# print('\x1b[2A',end='\r')
+
 
 
 
