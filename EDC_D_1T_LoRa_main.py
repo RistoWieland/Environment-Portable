@@ -119,6 +119,7 @@ try:
         if received_message is not None:
             print("Received message:", received_message)
             print(type(received_message))
+            temperatures = ast.literal_eval(received_message)
             print(temperatures)
 except Exception as e:
     print("Error:", e)
