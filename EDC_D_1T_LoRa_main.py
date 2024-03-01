@@ -119,8 +119,12 @@ try:
         if received_message is not None:
             print("Received message:", received_message)
             print(type(received_message))
+            # Remove the leading 'b' character
+            if received_message.startswith('b'):
+                received_message = received_message[1:]
             temperatures = ast.literal_eval(received_message)
             print(temperatures)
+            print(type(temperatures))
 except Exception as e:
     print("Error:", e)
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
