@@ -14,6 +14,7 @@ import psycopg2
 import socket
 import configparser
 from datetime import datetime, timezone
+import datetime
 import sys
 import threading
 import select
@@ -226,7 +227,7 @@ def check_lora_data_received(sent_list):
                 received_message = received_message[1:]
             # Clean up the string further
             received_message = received_message.strip("'")  # Remove surrounding single quotes
-            received_list = ast.literal_eval(received_message)
+            received_list = eval(received_message)
             if received_list == sent_list:
                 print("checked both list and they are equal")
                 return True
@@ -255,7 +256,7 @@ while True:
         send_lora_data(temperatures)
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if check_lora_data_received(temperatures):
-            # move_records_to_remote_db(settings_reading("local","table"))
+            move_records_to_remote_db(settings_reading("local","table"))
         else:    
             insert_records("local", temperatures, settings_reading("local","table"))
         
