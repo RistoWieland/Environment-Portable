@@ -176,7 +176,7 @@ def move_records_to_remote_db(table_name):
         for record in records:
             send_lora_data(record)
             time.sleep(2)
-            
+
         delete_query = f'''
         DELETE FROM {table_name};
         '''
@@ -243,7 +243,9 @@ while True:
         # Update the previous minute
         prev_minute = current_minute 
         # Initialize an empty list
-        temperatures = datetime.now().replace(second=0, microsecond=0) # Round timestamp to zero seconds
+        temperatures = []
+        dt = datetime.now().replace(second=0, microsecond=0) # Round timestamp to zero seconds
+        temperatures.append(dt)
         for i in range(number_of_sensors):
             value = read_temp(i)
             temperatures.append(value)
