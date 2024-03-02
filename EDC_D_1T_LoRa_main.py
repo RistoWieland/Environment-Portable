@@ -127,26 +127,28 @@ def drop_table(db, table_name):
 
 def insert_records(db, temperatures, table_name):
     open_connection(db)
+
     try:
         # Extract timestamp from temperatures
         timestamp = temperatures[0]
 
         # Prepare the insert query dynamically for each temperature column
-        temperature_columns = ', '.join(f't{i}' for i in range(1, len(temperatures)))
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 1))
 
         # Prepare the placeholders for temperature values
-        temperature_placeholders = ', '.join('%s' for _ in range(1, len(temperatures)))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 1))
 
         # Construct the values to be inserted (timestamp followed by temperature values)
-        values = [timestamp] + temperatures[1:]
+        values = temperatures[1:]
 
         # Construct the query with placeholders
         insert_query = f"""
             INSERT INTO {table_name} (timeStamp, {temperature_columns})
             VALUES (%s, {temperature_placeholders})
         """
+
         # Record to insert including rounded timestamp and temperatures
-        cursor.execute(insert_query, values)
+        cursor.execute(insert_query, [timestamp] + values)
         connection.commit()
         print("Data inserted successfully!")
         close_connection()
@@ -219,6 +221,8 @@ try:
     while True:
         received_message = node.receive()
         if received_message is not None:
+            print(received_message)
+            print(type(received_message))
             # Remove the leading 'b' character
             if received_message.startswith('b'):
                 received_message = received_message[1:]
