@@ -71,6 +71,25 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
+def check_lora_data_received(sent_list): 
+    timer = 10
+    while timer > 0:
+        received_message = node.receive()
+        if received_message is not None:
+            # Remove the leading 'b' character
+            if received_message.startswith('b'):
+                received_message = received_message[1:]
+            # Clean up the string further
+            received_message = received_message.strip("'")  # Remove surrounding single quotes
+            received_list = eval(received_message)
+            if received_list == sent_list:
+                print("checked both list and they are equal")
+                return True
+        timer -= 1
+        time.sleep(1)
+    return False   
+
+
 def open_connection(db): 
     global connection
     config = configparser.ConfigParser()
@@ -172,8 +191,10 @@ def insert_records(db, temperatures, table_name):
 def move_records_to_remote_db(table_name):
     open_connection("local")
     try:
+        # I limit the fetching to 10 entries everytime we need to move in order to still let the every minute interval be able to perform
         select_query = f'''
         SELECT * FROM {table_name};
+        LIMIT 10;       
         '''
         cursor.execute(select_query)
         records = cursor.fetchall()
@@ -185,13 +206,14 @@ def move_records_to_remote_db(table_name):
         for record in records:
             record_list = list(record)  # Convert tuple to list
             send_lora_data(record_list)
-            time.sleep(2)
-
-        delete_query = f'''
-        DELETE FROM {table_name};
-        '''
-        cursor.execute(delete_query)
-        connection.commit()
+            if check_lora_data_received(record_list):
+                # Delete the processed records
+                delete_query = f'''
+                DELETE FROM {table_name}
+                WHERE {', '.join(f'{column} = %s' for column in record_list)};
+                '''
+                cursor.execute(delete_query, record_list)
+                connection.commit()
         close_connection()
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
@@ -216,25 +238,6 @@ def read_temp(index):
         temp_string = lines[1][equals_pos+2:]
         temp_c = round(float(temp_string) / 1000.0, 1)
         return temp_c
-
-
-def check_lora_data_received(sent_list): 
-    timer = 20
-    while timer > 0:
-        received_message = node.receive()
-        if received_message is not None:
-            # Remove the leading 'b' character
-            if received_message.startswith('b'):
-                received_message = received_message[1:]
-            # Clean up the string further
-            received_message = received_message.strip("'")  # Remove surrounding single quotes
-            received_list = eval(received_message)
-            if received_list == sent_list:
-                print("checked both list and they are equal")
-                return True
-        timer -= 1
-        time.sleep(1)
-    return False   
 
 
 # drop_table("local", settings_reading("local","table"))
