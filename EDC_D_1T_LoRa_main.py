@@ -222,15 +222,11 @@ try:
     while True:
         received_message = node.receive()
         if received_message is not None:
-            print(received_message)
-            print(type(received_message))
             # Remove the leading 'b' character
             if received_message.startswith('b'):
                 received_message = received_message[1:]
-            print("b removed                 ", received_message)
             # Remove surrounding single quotes
             received_message = received_message.strip("'")
-            print(" more removed                 ", received_message)  
             temperatures = eval(received_message)
             print(temperatures)
             if check_network_connection():

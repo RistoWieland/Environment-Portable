@@ -255,7 +255,7 @@ while True:
         send_lora_data(temperatures)
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if check_lora_data_received(temperatures):
-            move_records_to_remote_db(settings_reading("local","table"))
+            # move_records_to_remote_db(settings_reading("local","table"))
         else:    
             insert_records("local", temperatures, settings_reading("local","table"))
         
