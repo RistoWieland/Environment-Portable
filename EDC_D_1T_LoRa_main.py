@@ -205,10 +205,10 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
-drop_table("remote", settings_reading("remote","table"))
-create_table("remote", settings_reading("remote","table"))
-drop_table("local", settings_reading("local","table"))
-create_table("local", settings_reading("local","table"))
+# drop_table("remote", settings_reading("remote","table"))
+# create_table("remote", settings_reading("remote","table"))
+# drop_table("local", settings_reading("local","table"))
+# create_table("local", settings_reading("local","table"))
 
 
 try:
