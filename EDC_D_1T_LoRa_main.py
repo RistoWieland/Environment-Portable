@@ -179,6 +179,7 @@ try:
             print(type(temperatures))
             insert_records("remote", temperatures)
             send_lora_data(temperatures)
+        time.sleep(1)
 except Exception as e:
     print("Error:", e)
 
