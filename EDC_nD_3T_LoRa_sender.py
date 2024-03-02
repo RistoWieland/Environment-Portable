@@ -236,11 +236,11 @@ def send_lora_data(temperatures):
 
 
 def check_lora_data_received(sent_list): 
-    timer = 30
+    timer = 100
     while timer > 0:
         received_message = node.receive()
         if received_message is not None:
-            print("Received message:", received_message)
+            print("Check back received message:", received_message)
             print(type(received_message))
             # Remove the leading 'b' character
             if received_message.startswith('b'):
@@ -254,7 +254,6 @@ def check_lora_data_received(sent_list):
             if received_list == sent_list:
                 return True
         timer -= 1
-        time.sleep(1)
     return False   
 
 
