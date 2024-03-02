@@ -84,7 +84,9 @@ def create_table(db, table_name):
                 timeStamp TIMESTAMP,
                 t0 REAL,
                 t1 REAL,
-                t2 REAL
+                t2 REAL,
+                t3 REAL,
+                humidity REAL
             );
         '''
         
@@ -122,7 +124,7 @@ def drop_table(db, table_name):
         close_connection()
 
 
-def insert_records(db, temperatures):
+def insert_records(db, temperatures, table_name):
     open_connection(db)
     try:
         # Round timestamp to zero seconds
@@ -132,16 +134,13 @@ def insert_records(db, temperatures):
         temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures)))
         temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures)))
 
-        postgres_insert_query = f"""
-            INSERT INTO waermepumpe (timeStamp, {temperature_columns})
+        insert_query = f"""
+            INSERT INTO {table_name} (timeStamp, {temperature_columns})
             VALUES (%s, {temperature_placeholders})
         """
-        print(postgres_insert_query)
         # Record to insert including rounded timestamp and temperatures
         record_to_insert = [dt, *temperatures]
-        print(record_to_insert)
-
-        cursor.execute(postgres_insert_query, record_to_insert)
+        cursor.execute(insert_query, record_to_insert)
         connection.commit()
         print("Data inserted successfully!")
         close_connection()
@@ -151,6 +150,55 @@ def insert_records(db, temperatures):
         close_connection()
 
 
+def move_records_to_remote_db(table_name):
+    open_connection("local")
+    try:
+        select_query = f'''
+        SELECT * FROM {table_name};
+        '''
+        cursor.execute(select_query)
+        records = cursor.fetchall()
+        close_connection()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while moving records to remote PostgreSQL", error)
+        close_connection()
+
+    open_connection("remote")
+    try:
+        for record in records:
+            print(record)
+            insert_query = f'''
+            INSERT INTO {table_name} (timestamp, t0, t1, t2, t3, humidity) VALUES (%s,%s,%s,%s,%s,%s);
+            '''
+            cursor.execute(insert_query, record)    
+        connection.commit()
+        close_connection()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while moving records to remote PostgreSQL", error)
+        close_connection()
+
+    open_connection("local")
+    try:
+        delete_query = f'''
+        DELETE FROM {table_name};
+        '''
+        cursor.execute(delete_query)
+        connection.commit()
+        close_connection()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while moving records to remote PostgreSQL", error)
+        close_connection()
+
+
+def check_network_connection():
+    try:
+        # Try to connect to a well-known external server
+        socket.create_connection(("8.8.8.8", 53), timeout=5)
+        return True
+    except OSError:
+        return False
+
+
 def send_lora_data(temperatures):
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
     node.send(data)
@@ -158,6 +206,9 @@ def send_lora_data(temperatures):
 
 drop_table("remote", settings_reading("remote","table"))
 create_table("remote", settings_reading("remote","table"))
+drop_table("local", settings_reading("local","table"))
+create_table("local", settings_reading("local","table"))
+
 
 try:
     while True:
@@ -170,7 +221,11 @@ try:
             received_message = received_message.strip("'")  
             temperatures = ast.literal_eval(received_message)
             print(temperatures)
-            insert_records("remote", temperatures)
+            if check_network_connection():
+                insert_records("remote", temperatures, settings_reading("remote","table"))
+                move_records_to_remote_db(settings_reading("remote","table"))
+            else:
+                insert_records("local", temperatures, settings_reading("local","table"))
             send_lora_data(temperatures)
         time.sleep(1)
 except Exception as e:
