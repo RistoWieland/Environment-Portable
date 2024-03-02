@@ -226,6 +226,7 @@ try:
             # Remove the leading 'b' character
             if received_message.startswith('b'):
                 received_message = received_message[1:]
+            print("b removed                 ", received_message)
             # Remove surrounding single quotes
             received_message = received_message.strip("'")  
             temperatures = ast.literal_eval(received_message)
