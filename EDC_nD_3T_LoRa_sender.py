@@ -193,7 +193,7 @@ def move_records_to_remote_db(table_name):
     try:
         # I limit the fetching to 10 entries everytime we need to move in order to still let the every minute interval be able to perform
         select_query = f'''
-        SELECT * FROM {table_name};
+        SELECT * FROM {table_name}
         LIMIT 10;       
         '''
         cursor.execute(select_query)
