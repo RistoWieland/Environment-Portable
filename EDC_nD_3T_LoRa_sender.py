@@ -130,7 +130,7 @@ def drop_table(db, table_name):
         close_connection()
 
 
-def insert_records(db, temperatures):
+def insert_records(db, temperatures, table_name):
     open_connection(db)
 
     try:
@@ -256,6 +256,6 @@ while True:
         if check_lora_data_received(temperatures):
             move_records_to_remote_db(settings_reading("local","table"))
         else:    
-            insert_records("local", temperatures)
+            insert_records("local", temperatures, settings_reading("local","table"))
         
     time.sleep(1)
