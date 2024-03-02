@@ -227,6 +227,8 @@ try:
                 received_message = received_message[1:]
             # Remove surrounding single quotes
             received_message = received_message.strip("'")
+            print("after last modification : ", received_message)
+            print(type(received_message))
             temperatures = eval(received_message)
             print(temperatures)
             print(type(temperatures))
