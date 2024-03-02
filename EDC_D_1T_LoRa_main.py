@@ -162,23 +162,15 @@ create_table("remote", settings_reading("remote","table"))
 try:
     while True:
         received_message = node.receive()
-        print(received_message)
-        print(type(received_message))
-        print("----------------------")
         if received_message is not None:
-            print("hier funktioniert es ---------------------------------------------------")
-            print("Received message:", received_message)
-            print(type(received_message))
             # Remove the leading 'b' character
             if received_message.startswith('b'):
                 received_message = received_message[1:]
-            # Clean up the string further
-            received_message = received_message.strip("'")  # Remove surrounding single quotes
+            # Remove surrounding single quotes
+            received_message = received_message.strip("'")  
             temperatures = ast.literal_eval(received_message)
             print(temperatures)
-            print(type(temperatures))
             insert_records("remote", temperatures)
-            print("ich schicke es als eine", type(temperatures))
             send_lora_data(temperatures)
         time.sleep(1)
 except Exception as e:
