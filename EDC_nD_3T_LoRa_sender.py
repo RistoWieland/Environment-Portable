@@ -242,21 +242,20 @@ def check_lora_data_received(sent_list):
         print(received_message)
         print(type(received_message))
         print("----------------------")
-        for message, message_type in received_message:
-            if message is not None:
-                print("yoooooooooooooooooo  Check back received message:", received_message)
-                print(type(received_message))
-                # Remove the leading 'b' character
-                if received_message.startswith('b'):
-                    received_message = received_message[1:]
-                # Clean up the string further
-                received_message = received_message.strip("'")  # Remove surrounding single quotes
-                received_list = ast.literal_eval(received_message)
-                print("sent list ", sent_list)
-                print("received list ", received_list)
-                print(type(received_list))
-                if received_list == sent_list:
-                    return True
+        if received_message != None:
+            print("yoooooooooooooooooo  Check back received message:", received_message)
+            print(type(received_message))
+            # Remove the leading 'b' character
+            if received_message.startswith('b'):
+                received_message = received_message[1:]
+            # Clean up the string further
+            received_message = received_message.strip("'")  # Remove surrounding single quotes
+            received_list = ast.literal_eval(received_message)
+            print("sent list ", sent_list)
+            print("received list ", received_list)
+            print(type(received_list))
+            if received_list == sent_list:
+                return True
         timer -= 1
         time.sleep(1)
     return False   
