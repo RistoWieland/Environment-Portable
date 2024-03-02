@@ -137,25 +137,31 @@ def insert_records(db, temperatures, table_name):
         # Round timestamp to zero seconds
         timestamp = datetime.now().replace(second=0, microsecond=0)
 
-         # Prepare the insert query dynamically for each temperature column
-        temperature_columns = ', '.join(f't{i}' for i in range(1, len(temperatures)))
+        # Prepare the insert query dynamically for each temperature column
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures)))
 
         # Prepare the placeholders for temperature values
-        temperature_placeholders = ', '.join('%s' for _ in range(1, len(temperatures)))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures)))
 
         # Construct the values to be inserted (timestamp followed by temperature values)
-        values = [timestamp] + temperatures[1:]
+        values = [timestamp] + temperatures
 
         # Construct the query with placeholders
         insert_query = f"""
             INSERT INTO {table_name} (timeStamp, {temperature_columns})
             VALUES (%s, {temperature_placeholders})
         """
+
         # Record to insert including rounded timestamp and temperatures
         cursor.execute(insert_query, values)
         connection.commit()
         print("Data inserted successfully!")
         close_connection()
+
+    except (Exception, psycopg2.Error) as error:
+        print ("Error while connecting to PostgreSQL", error)
+        close_connection()
+
 
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL:", error)
