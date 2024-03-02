@@ -241,8 +241,8 @@ def check_lora_data_received(sent_list):
         received_message = node.receive()
         print(received_message)
         print(type(received_message))
-        if isinstance(received_message, str):
-            print("Check back received message:", received_message)
+        if received_message is not None:
+            print("yoooooooooooooooooo  Check back received message:", received_message)
             print(type(received_message))
             # Remove the leading 'b' character
             if received_message.startswith('b'):
