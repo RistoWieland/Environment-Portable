@@ -160,51 +160,29 @@ def insert_records(db, temperatures):
         close_connection()
 
 
-def check_network_connection():
+def move_records_to_remote_db(table_name):
+    open_connection("local")
     try:
-        # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.8", 53), timeout=0.5)
-        return True
-    except OSError:
-        return False
-
-
-def delete_all_records(db):
-    open_connection(db)
-    try:
-        cursor.execute("DELETE FROM pfannenstiel;")
-        connection.commit()
-        close_connection()
+        select_query = f'''
+        SELECT * FROM {table_name};
+        '''
+        cursor.execute(select_query)
+        records = cursor.fetchall()
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
 
-
-def move_records_to_remote_db():
-    open_connection("local")
-    try:
-        cursor.execute("SELECT * FROM pfannenstiel;")
-        records = cursor.fetchall()
-        close_connection()
-    except (Exception, psycopg2.Error) as error:
-        print("Error while fetching records from local PostgreSQL", error)
-        close_connection()
-        return  # Exit the function if an error occurs or no records are found
-
-    # If there are no records, skip the rest of the function
-    if not records:
-        print("No records found in local database. Skipping the rest of the function.")
-        return
-
-    open_connection("remote")
     try:
         for record in records:
-            print(record)
-            postgres_insert_query = """ INSERT INTO pfannenstiel (timeStamp, temperature) VALUES (%s,%s)"""
-            cursor.execute(postgres_insert_query, record)    
+            send_lora_data(record)
+            time.sleep(2)
+            
+        delete_query = f'''
+        DELETE FROM {table_name};
+        '''
+        cursor.execute(delete_query)
         connection.commit()
         close_connection()
-        delete_all_records("local")  # This line should be inside the try block
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
@@ -254,8 +232,8 @@ def check_lora_data_received(sent_list):
     return False   
 
 
-drop_table("local", settings_reading("local","table"))
-create_table("local", settings_reading("local","table"))
+# drop_table("local", settings_reading("local","table"))
+# create_table("local", settings_reading("local","table"))
 
 prev_minute = None  # Initialize the variable to track the previous minute
 
@@ -265,13 +243,15 @@ while True:
         # Update the previous minute
         prev_minute = current_minute 
         # Initialize an empty list
-        temp = []  
+        temperatures = datetime.now().replace(second=0, microsecond=0) # Round timestamp to zero seconds
         for i in range(number_of_sensors):
             value = read_temp(i)
-            temp.append(value)
-        send_lora_data(temp)
+            temperatures.append(value)
+        send_lora_data(temperatures)
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
-        if not check_lora_data_received(temp):
-            print("sent and received is not equal !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        if check_lora_data_received(temp):
+            move_records_to_remote_db(settings_reading("local","table"))
+        else:    
             insert_records("local", temp)
+        
     time.sleep(1)

@@ -128,20 +128,25 @@ def drop_table(db, table_name):
 def insert_records(db, temperatures, table_name):
     open_connection(db)
     try:
-        # Round timestamp to zero seconds
-        dt = datetime.now().replace(second=0, microsecond=0)
+        # Extract timestamp from temperatures
+        timestamp = temperatures[0]
 
         # Prepare the insert query dynamically for each temperature column
-        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures)))
-        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures)))
+        temperature_columns = ', '.join(f't{i}' for i in range(1, len(temperatures)))
 
+        # Prepare the placeholders for temperature values
+        temperature_placeholders = ', '.join('%s' for _ in range(1, len(temperatures)))
+
+        # Construct the values to be inserted (timestamp followed by temperature values)
+        values = [timestamp] + temperatures[1:]
+
+        # Construct the query with placeholders
         insert_query = f"""
             INSERT INTO {table_name} (timeStamp, {temperature_columns})
             VALUES (%s, {temperature_placeholders})
         """
         # Record to insert including rounded timestamp and temperatures
-        record_to_insert = [dt, *temperatures]
-        cursor.execute(insert_query, record_to_insert)
+        cursor.execute(insert_query, values)
         connection.commit()
         print("Data inserted successfully!")
         close_connection()
@@ -167,7 +172,6 @@ def move_records_to_remote_db(table_name):
     open_connection("remote")
     try:
         for record in records:
-            print(record)
             insert_query = f'''
             INSERT INTO {table_name} (timestamp, t0, t1, t2, t3, humidity) VALUES (%s,%s,%s,%s,%s,%s);
             '''
