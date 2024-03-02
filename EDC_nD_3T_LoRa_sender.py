@@ -255,7 +255,7 @@ def check_lora_data_received(sent_list):
             if received_list == sent_list:
                 return True
         timer -= 1
-        timer.sleep(1)
+        time.sleep(1)
     return False   
 
 
