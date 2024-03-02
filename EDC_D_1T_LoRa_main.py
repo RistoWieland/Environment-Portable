@@ -228,8 +228,9 @@ try:
                 received_message = received_message[1:]
             print("b removed                 ", received_message)
             # Remove surrounding single quotes
-            received_message = received_message.strip("'")  
-            temperatures = ast.literal_eval(received_message)
+            received_message = received_message.strip("'")
+            print(" more removed                 ", received_message)  
+            temperatures = eval(received_message)
             print(temperatures)
             if check_network_connection():
                 insert_records("remote", temperatures, settings_reading("remote","table"))
