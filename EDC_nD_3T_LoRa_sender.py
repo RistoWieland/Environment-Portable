@@ -241,6 +241,7 @@ def check_lora_data_received(sent_list):
         received_message = node.receive()
         print(received_message)
         print(type(received_message))
+        print("----------------------")
         if received_message is not None:
             print("yoooooooooooooooooo  Check back received message:", received_message)
             print(type(received_message))
