@@ -183,7 +183,8 @@ def move_records_to_remote_db(table_name):
 
     try:
         for record in records:
-            send_lora_data(record)
+            record_list = list(record)  # Convert tuple to list
+            send_lora_data(record_list)
             time.sleep(2)
 
         delete_query = f'''
