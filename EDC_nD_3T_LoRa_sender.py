@@ -239,22 +239,15 @@ def check_lora_data_received(sent_list):
     timer = 60
     while timer > 0:
         received_message = node.receive()
-        print(received_message)
-        print(type(received_message))
-        print("----------------------")
         if received_message is not None:
-            print("yoooooooooooooooooo  Check back received message:", received_message)
-            print(type(received_message))
             # Remove the leading 'b' character
             if received_message.startswith('b'):
                 received_message = received_message[1:]
             # Clean up the string further
             received_message = received_message.strip("'")  # Remove surrounding single quotes
             received_list = ast.literal_eval(received_message)
-            print("sent list ", sent_list)
-            print("received list ", received_list)
-            print(type(received_list))
             if received_list == sent_list:
+                print("checked both list and they are equal")
                 return True
         timer -= 1
         time.sleep(1)
@@ -277,7 +270,6 @@ while True:
             value = read_temp(i)
             temp.append(value)
         send_lora_data(temp)
-        print("ich schicke es als eine", type(temp))
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if not check_lora_data_received(temp):
             print("sent and received is not equal !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
