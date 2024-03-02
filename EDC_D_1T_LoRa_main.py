@@ -11,6 +11,7 @@ import psycopg2
 import sys
 import threading
 import configparser
+import socket
 import time
 from datetime import datetime, timezone
 import select
