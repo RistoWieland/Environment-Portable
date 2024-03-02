@@ -7,6 +7,7 @@
 # When the LoRaHAT is attached to RPi, the M0 and M1 jumpers of HAT should be removed.
 
 import os
+import ast
 import glob
 import time
 import psycopg2
@@ -241,7 +242,7 @@ def check_lora_data_received(sent_list):
         print(received_message)
         print(type(received_message))
         print("----------------------")
-        if received_message != None:
+        if received_message is not None:
             print("yoooooooooooooooooo  Check back received message:", received_message)
             print(type(received_message))
             # Remove the leading 'b' character
