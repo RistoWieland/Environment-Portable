@@ -134,17 +134,17 @@ def insert_records(db, temperatures, table_name):
     open_connection(db)
 
     try:
-        # Round timestamp to zero seconds
-        timestamp = datetime.now().replace(second=0, microsecond=0)
+        # Extract timestamp from temperatures
+        timestamp = temperatures[0]
 
         # Prepare the insert query dynamically for each temperature column
-        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures)))
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 1))
 
         # Prepare the placeholders for temperature values
-        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures)))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 1))
 
         # Construct the values to be inserted (timestamp followed by temperature values)
-        values = [timestamp] + temperatures
+        values = temperatures[1:]
 
         # Construct the query with placeholders
         insert_query = f"""
@@ -153,7 +153,7 @@ def insert_records(db, temperatures, table_name):
         """
 
         # Record to insert including rounded timestamp and temperatures
-        cursor.execute(insert_query, values)
+        cursor.execute(insert_query, [timestamp] + values)
         connection.commit()
         print("Data inserted successfully!")
         close_connection()
