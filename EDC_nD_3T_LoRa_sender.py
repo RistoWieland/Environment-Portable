@@ -248,7 +248,7 @@ while True:
         prev_minute = current_minute 
         # Initialize an empty list
         temperatures = []
-        dt = datetime.now().replace(second=0, microsecond=0) # Round timestamp to zero seconds
+        dt = datetime.datetime.now().replace(second=0, microsecond=0) # Round timestamp to zero seconds
         temperatures.append(dt)
         for i in range(number_of_sensors):
             value = read_temp(i)
