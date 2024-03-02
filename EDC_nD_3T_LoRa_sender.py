@@ -207,12 +207,13 @@ def move_records_to_remote_db(table_name):
             record_list = list(record)  # Convert tuple to list
             send_lora_data(record_list)
             if check_lora_data_received(record_list):
-                # Delete the processed records
+                # Delete the processed records using timestamp
+                timestamp = record_list[0]  # Assuming timestamp is the first element in record_list
                 delete_query = f'''
                 DELETE FROM {table_name}
-                WHERE {', '.join(f'{column} = %s' for column in record_list)};
+                WHERE timeStamp = %s;
                 '''
-                cursor.execute(delete_query, record_list)
+                cursor.execute(delete_query, (timestamp,))
                 connection.commit()
         close_connection()
     except (Exception, psycopg2.Error) as error:
