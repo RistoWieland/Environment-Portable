@@ -230,7 +230,6 @@ def read_temp(index):
 
 
 def send_lora_data(temperatures):
-    # for temperature in temperatures:
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
     node.send(data)
 

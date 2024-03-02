@@ -152,9 +152,7 @@ def insert_records(db, temperatures):
 
 
 def send_lora_data(temperatures):
-    # for temperature in temperatures:
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
-    print(data)
     node.send(data)
 
 
@@ -165,6 +163,7 @@ try:
     while True:
         received_message = node.receive()
         if received_message is not None:
+            print("hier funktioniert es ---------------------------------------------------")
             print("Received message:", received_message)
             print(type(received_message))
             # Remove the leading 'b' character
