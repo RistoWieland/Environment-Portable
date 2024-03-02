@@ -236,7 +236,7 @@ def send_lora_data(temperatures):
 
 
 def check_lora_data_received(sent_list): 
-    timer = 60
+    timer = 20
     while timer > 0:
         received_message = node.receive()
         if received_message is not None:
