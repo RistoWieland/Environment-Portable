@@ -276,6 +276,7 @@ while True:
             value = read_temp(i)
             temp.append(value)
         send_lora_data(temp)
+        print("ich schicke es als eine", type(temp))
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if not check_lora_data_received(temp):
             print("sent and received is not equal !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
