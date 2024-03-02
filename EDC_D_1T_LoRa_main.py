@@ -162,6 +162,9 @@ create_table("remote", settings_reading("remote","table"))
 try:
     while True:
         received_message = node.receive()
+        print(received_message)
+        print(type(received_message))
+        print("----------------------")
         if received_message is not None:
             print("hier funktioniert es ---------------------------------------------------")
             print("Received message:", received_message)
