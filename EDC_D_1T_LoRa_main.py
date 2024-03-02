@@ -13,7 +13,7 @@ import threading
 import configparser
 import socket
 import time
-from datetime import datetime, timezone
+# from datetime import datetime, timezone
 import datetime
 import select
 import tty
@@ -229,13 +229,14 @@ try:
             received_message = received_message.strip("'")
             temperatures = eval(received_message)
             print(temperatures)
+            print(type(temperatures))
+            print("-------------------------")
             if check_network_connection():
                 insert_records("remote", temperatures, settings_reading("remote","table"))
                 move_records_to_remote_db(settings_reading("remote","table"))
             else:
                 insert_records("local", temperatures, settings_reading("local","table"))
             send_lora_data(temperatures)
-        time.sleep(1)
 except Exception as e:
     print("Error:", e)
 

@@ -66,6 +66,11 @@ number_of_sensors = int(settings_reading("settings", "number sensors"))
 node = sx126x.sx126x(serial_num = "/dev/ttyS0",freq=868,addr=0,power=22,rssi=True,air_speed=2400,relay=False)
 
 
+def send_lora_data(temperatures):
+    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
+    node.send(data)
+
+
 def open_connection(db): 
     global connection
     config = configparser.ConfigParser()
@@ -210,11 +215,6 @@ def read_temp(index):
         temp_string = lines[1][equals_pos+2:]
         temp_c = round(float(temp_string) / 1000.0, 1)
         return temp_c
-
-
-def send_lora_data(temperatures):
-    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
-    node.send(data)
 
 
 def check_lora_data_received(sent_list): 
