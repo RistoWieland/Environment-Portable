@@ -31,14 +31,31 @@ def settings_reading(which_section, which_parameter):
     return reading
 
 
+def settings_writing(which_section, which_parameter, value):
+    # Read existing config or create a new one
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
+    # Set the corresponding setting value
+    config[which_section][which_parameter] = value
+
+    # Write the updated config to the file
+    with open(config_file, 'w') as configfile:
+        config.write(configfile)
+
+
 # where the config file is located and load it as global variable
 global config_file
 config_file = '/home/statler/Config/config.ini'
 
-
 # here I keep track of which version this script is
 script_version = "v1.00"
-release_notes ="changed the config file config.ini and added release notes"
+release_notes ="initial version"
+
+# write this version number of this script into the config file
+settings_writingig("info", "version", script_version)
+# write release notes into the config file
+settings_writing("info", "release notes", release_notes)
 
 
 # initialzing bme280 temperature, preassure, humidity sensor
@@ -238,6 +255,7 @@ def check_network_connection():
 def send_lora_data(temperatures):
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
     node.send(data)
+
 
 
 # drop_table("remote", settings_reading("remote","table"))
