@@ -24,8 +24,8 @@ def settings_reading(which_section, which_parameter):
 
 
 # Define the path to your local repository on the Raspberry Pi
-# repo_path = settings_reading("updates", "repo path")
-repo_path = '/home/statler/Environment-Portable/'
+repo_path = settings_reading("updates", "repo path")
+# repo_path = '/home/statler/Environment-Portable/'
 print(repo_path)
 
 # Define the path where your Python script is stored on the Raspberry Pi
