@@ -306,6 +306,10 @@ font_4 = ImageFont.truetype(font_path, font_size_4)
 
 
 while True:
+    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+    draw = ImageDraw.Draw(image)
+    draw.text((5, 0), 'Temperatures: ', font=font_1, fill = "WHITE")
+    LCD.LCD_ShowImage(image,0,0)
     received_message = node.receive()
     if received_message is not None:
         # Remove the leading 'b' character
