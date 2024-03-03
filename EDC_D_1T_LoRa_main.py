@@ -53,7 +53,7 @@ script_version = "v1.00"
 release_notes ="initial version"
 
 # write this version number of this script into the config file
-settings_writingig("info", "version", script_version)
+settings_writing("info", "version", script_version)
 # write release notes into the config file
 settings_writing("info", "release notes", release_notes)
 
