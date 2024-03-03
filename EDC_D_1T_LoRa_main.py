@@ -282,10 +282,10 @@ def display_writing(temperatures):
 
 
 # initalizing LCD
-LCD = LCD_1in44.LCD()
-Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
-LCD.LCD_Init(Lcd_ScanDir)
-LCD.LCD_Clear()
+# LCD = LCD_1in44.LCD()
+# Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
+# LCD.LCD_Init(Lcd_ScanDir)
+# LCD.LCD_Clear()
 
 # Load a font
 #font_path = "/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf"
