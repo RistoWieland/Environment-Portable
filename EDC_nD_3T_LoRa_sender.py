@@ -180,7 +180,7 @@ def insert_records(db, temperatures, table_name):
         # Record to insert including rounded timestamp and temperatures
         cursor.execute(insert_query, [timestamp] + values)
         connection.commit()
-        print("Data inserted successfully!")
+        print("Data inserted locally successfully!")
         close_connection()
 
     except (Exception, psycopg2.Error) as error:
