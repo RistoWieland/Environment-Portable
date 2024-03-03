@@ -25,13 +25,6 @@ sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
 
 
-def settings_reading(which_section, which_parameter):
-    config = configparser.ConfigParser()
-    config.read(config_file)
-    reading = config[which_section][which_parameter]
-    return reading
-
-
 # where the config file is located and load it as global variable
 global config_file
 config_file = '/home/statler/Config/config.ini'
@@ -40,6 +33,32 @@ config_file = '/home/statler/Config/config.ini'
 # here I keep track of which version this script is
 script_version = "v1.00"
 release_notes ="initial version"
+
+
+def settings_reading(which_section, which_parameter):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    reading = config[which_section][which_parameter]
+    return reading
+
+
+def settings_writing(which_section, which_parameter, value):
+    # Read existing config or create a new one
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
+    # Set the corresponding setting value
+    config[which_section][which_parameter] = value
+
+    # Write the updated config to the file
+    with open(config_file, 'w') as configfile:
+        config.write(configfile)
+
+
+# write this version number of this script into the config file
+settings_writing("info", "version", script_version)
+# write release notes into the config file
+settings_writing("info", "release notes", release_notes)
 
 
 # loading from config file how many temperature sensors are attached 

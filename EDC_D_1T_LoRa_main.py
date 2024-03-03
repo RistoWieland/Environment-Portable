@@ -33,7 +33,6 @@ sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
 
 
-
 # where the config file is located and load it as global variable
 global config_file
 config_file = '/home/statler/Config/config.ini'
