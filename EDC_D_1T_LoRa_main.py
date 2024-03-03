@@ -147,6 +147,16 @@ def insert_records(db, temperatures, table_name):
         # Extract timestamp from temperatures
         timestamp = temperatures[0]
 
+        # Check if timestamp already exists in the database
+        check_query = f"""
+            SELECT COUNT(*) FROM {table_name} WHERE timeStamp = %s
+        """
+        cursor.execute(check_query, (timestamp,))
+        result = cursor.fetchone()[0]
+        if result > 0:
+            print("Timestamp already exists, skipping insertion.")
+            return  # Skip insertion if timestamp already exists
+
         # Prepare the insert query dynamically for each temperature column
         temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 1))
         temperature_columns += ', t3, humidity'
