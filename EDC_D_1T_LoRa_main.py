@@ -31,6 +31,15 @@ sys.path.append('/home/statler/1.44inch-LCD-HAT-Code')
 import LCD_1in44
 
 
+# where the config file is located and load it as global variable
+global config_file
+config_file = '/home/statler/Config/config.ini'
+
+# here I keep track of which version this script is
+script_version = "v1.00"
+release_notes ="initial version"
+
+
 def settings_reading(which_section, which_parameter):
     config = configparser.ConfigParser()
     config.read(config_file)
@@ -50,14 +59,6 @@ def settings_writing(which_section, which_parameter, value):
     with open(config_file, 'w') as configfile:
         config.write(configfile)
 
-
-# where the config file is located and load it as global variable
-global config_file
-config_file = '/home/statler/Config/config.ini'
-
-# here I keep track of which version this script is
-script_version = "v1.00"
-release_notes ="initial version"
 
 # write this version number of this script into the config file
 settings_writing("info", "version", script_version)
