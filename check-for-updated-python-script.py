@@ -25,15 +25,19 @@ def settings_reading(which_section, which_parameter):
 
 # Define the path to your local repository on the Raspberry Pi
 repo_path = settings_reading("updates", "repo path")
+print(repo_path)
 
 # Define the path where your Python script is stored on the Raspberry Pi
 script_path = settings_reading("updates", "script path")
+print(script_path)
 
 # Define the file name of your Python script
 script_name = settings_reading("updates", "script name")
+print(script_name)
 
 # Define the name of the systemctl service
 service_name = settings_reading("updates", "service name")
+print(service_name)
 
 
 def check_for_updates():
