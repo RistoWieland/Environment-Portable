@@ -26,8 +26,8 @@ import select
 import tty
 import smbus2
 import bme280
-import LCD_1in44
-from PIL import Image,ImageDraw,ImageFont,ImageColor
+# import LCD_1in44
+# from PIL import Image,ImageDraw,ImageFont,ImageColor
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
@@ -299,17 +299,13 @@ def display_writing(temperatures):
 #font_4 = ImageFont.truetype(font_path, font_size_4)
 
 
-# drop_table("remote", settings_reading("remote","table"))
+drop_table("remote", settings_reading("remote","table"))
 # create_table("remote", settings_reading("remote","table"))
-# drop_table("local", settings_reading("local","table"))
+drop_table("local", settings_reading("local","table"))
 # create_table("local", settings_reading("local","table"))
 
 
 while True:
-#    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-#    draw = ImageDraw.Draw(image)
-#    draw.text((5, 0), 'Hallo ', font=font_1, fill = "WHITE")
-#    LCD.LCD_ShowImage(image,0,0)
     received_message = node.receive()
     print(received_message)
     time.sleep(1)

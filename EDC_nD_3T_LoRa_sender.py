@@ -240,7 +240,7 @@ def read_temp(index):
         return temp_c
 
 
-# drop_table("local", settings_reading("local","table"))
+drop_table("local", settings_reading("local","table"))
 # create_table("local", settings_reading("local","table"))
 
 prev_minute = None  # Initialize the variable to track the previous minute
