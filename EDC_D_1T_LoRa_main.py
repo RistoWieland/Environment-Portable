@@ -26,12 +26,12 @@ import select
 import tty
 import smbus2
 import bme280
-from PIL import Image,ImageDraw,ImageFont,ImageColor
+# import LCD_1in44
+# from PIL import Image,ImageDraw,ImageFont,ImageColor
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
-# sys.path.append('/home/statler/1.44inch-LCD-HAT-Code')
-import LCD_1in44
+
 
 
 # where the config file is located and load it as global variable
@@ -282,21 +282,21 @@ def display_writing(temperatures):
 
 
 # initalizing LCD
-LCD = LCD_1in44.LCD()
-Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
-LCD.LCD_Init(Lcd_ScanDir)
-LCD.LCD_Clear()
+#LCD = LCD_1in44.LCD()
+#Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
+#LCD.LCD_Init(Lcd_ScanDir)
+#LCD.LCD_Clear()
 
 # Load a font
-font_path = "/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf"
-font_size_1 = 16
-font_1 = ImageFont.truetype(font_path, font_size_1)
-font_size_2 = 44
-font_2 = ImageFont.truetype(font_path, font_size_2)
-font_size_3 = 26
-font_3 = ImageFont.truetype(font_path, font_size_3)
-font_size_4 = 12
-font_4 = ImageFont.truetype(font_path, font_size_4)
+#font_path = "/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf"
+#font_size_1 = 16
+#font_1 = ImageFont.truetype(font_path, font_size_1)
+#font_size_2 = 44
+#font_2 = ImageFont.truetype(font_path, font_size_2)
+#font_size_3 = 26
+#font_3 = ImageFont.truetype(font_path, font_size_3)
+#font_size_4 = 12
+#font_4 = ImageFont.truetype(font_path, font_size_4)
 
 
 # drop_table("remote", settings_reading("remote","table"))
@@ -306,10 +306,10 @@ font_4 = ImageFont.truetype(font_path, font_size_4)
 
 
 while True:
-    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-    draw = ImageDraw.Draw(image)
-    draw.text((5, 0), 'Hallo ', font=font_1, fill = "WHITE")
-    LCD.LCD_ShowImage(image,0,0)
+#    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+#    draw = ImageDraw.Draw(image)
+#    draw.text((5, 0), 'Hallo ', font=font_1, fill = "WHITE")
+#    LCD.LCD_ShowImage(image,0,0)
     received_message = node.receive()
     print(received_message)
     time.sleep(1)
