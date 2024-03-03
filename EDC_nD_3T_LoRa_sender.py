@@ -38,8 +38,8 @@ config_file = '/home/statler/Config/config.ini'
 
 
 # here I keep track of which version this script is
-script_version = "v1.01"
-release_notes ="changed the config file config.ini and added release notes"
+script_version = "v1.00"
+release_notes ="initial version"
 
 
 # loading from config file how many temperature sensors are attached 
@@ -257,6 +257,7 @@ while True:
         for i in range(number_of_sensors):
             value = read_temp(i)
             temperatures.append(value)
+        print(temperatures)
         send_lora_data(temperatures)
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if check_lora_data_received(temperatures):
