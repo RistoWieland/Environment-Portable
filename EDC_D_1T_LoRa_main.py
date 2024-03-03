@@ -30,7 +30,7 @@ from PIL import Image,ImageDraw,ImageFont,ImageColor
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
-sys.path.append('/home/statler/1.44inch-LCD-HAT-Code')
+# sys.path.append('/home/statler/1.44inch-LCD-HAT-Code')
 import LCD_1in44
 
 
@@ -311,6 +311,8 @@ while True:
     draw.text((5, 0), 'Hallo ', font=font_1, fill = "WHITE")
     LCD.LCD_ShowImage(image,0,0)
     received_message = node.receive()
+    print(received_message)
+    time.sleep(1)
     if received_message is not None:
         # Remove the leading 'b' character
         if received_message.startswith('b'):
