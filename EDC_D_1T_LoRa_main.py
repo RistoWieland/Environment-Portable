@@ -26,8 +26,8 @@ import select
 import tty
 import smbus2
 import bme280
-# import LCD_1in44
-# from PIL import Image,ImageDraw,ImageFont,ImageColor
+import LCD_1in44
+from PIL import Image,ImageDraw,ImageFont,ImageColor
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
