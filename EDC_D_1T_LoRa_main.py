@@ -38,8 +38,8 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.02"
-release_notes ="initial version. Check if auto update works"
+script_version = "v1.03"
+release_notes ="initial version. Check Network Connection Check"
 
 
 def settings_reading(which_section, which_parameter):
@@ -256,7 +256,7 @@ def move_records_to_remote_db(table_name):
 def check_network_connection():
     try:
         # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.8", 53), timeout=5)
+        socket.create_connection(("8.8.8.1", 53), timeout=5)
         return True
     except OSError:
         return False
