@@ -18,6 +18,7 @@ import datetime
 import select
 import tty
 import smbus2
+import bme280
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
