@@ -151,7 +151,7 @@ def insert_records(db, temperatures, table_name):
         # Record to insert including rounded timestamp and temperatures
         cursor.execute(insert_query, [timestamp] + values)
         connection.commit()
-        print("Data inserted successfully!")
+        print("Data inserted ", db, " successfully!")
         close_connection()
 
     except (Exception, psycopg2.Error) as error:
@@ -201,7 +201,7 @@ def move_records_to_remote_db(table_name):
 def check_network_connection():
     try:
         # Try to connect to a well-known external server
-        socket.create_connection(("8.8.8.1", 53), timeout=5)
+        socket.create_connection(("8.8.8.8", 53), timeout=5)
         return True
     except OSError:
         return False
