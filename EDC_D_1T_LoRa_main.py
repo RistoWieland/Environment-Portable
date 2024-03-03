@@ -318,7 +318,7 @@ while True:
         # Remove surrounding single quotes
         received_message = received_message.strip("'")
         temperatures = eval(received_message)
-        display_writing(temperatures)
+        # display_writing(temperatures)
         if check_network_connection():
             insert_records("remote", temperatures, settings_reading("remote","table"))
             move_records_to_remote_db(settings_reading("remote","table"))
