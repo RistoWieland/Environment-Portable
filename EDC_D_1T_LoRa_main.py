@@ -1,6 +1,7 @@
 # requirements:
 # sudo apt install python3-psycopg2
 # sudo apt install python3-serial
+# sudo pip3 install RPi.bme280
 #
 # Need to disable the serial login shell and have to enable serial interface 
 # command `sudo raspi-config`
@@ -13,10 +14,10 @@ import threading
 import configparser
 import socket
 import time
-# from datetime import datetime, timezone
 import datetime
 import select
 import tty
+import smbus2
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
@@ -37,6 +38,13 @@ config_file = '/home/statler/Config/config.ini'
 # here I keep track of which version this script is
 script_version = "v1.00"
 release_notes ="changed the config file config.ini and added release notes"
+
+
+# initialzing bme280 temperature, preassure, humidity sensor
+port = 1
+address = 0x76 # Adafruit BME280 address. Other BME280s may be different. check with: sudo i2cdetect -y 1
+bus = smbus2.SMBus(port)
+bme280.load_calibration_params(bus,address)
 
 
 #   serial_num
@@ -130,17 +138,24 @@ def insert_records(db, temperatures, table_name):
     open_connection(db)
 
     try:
+        # reading the local environment sensor
+        bme280_data = bme280.sample(bus, address)
+        local_humidity = round(bme280_data.humidity)
+        local_temperature = round(bme280_data.temperature, 1)
+        
         # Extract timestamp from temperatures
         timestamp = temperatures[0]
 
         # Prepare the insert query dynamically for each temperature column
         temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 1))
+        temperature_columns += ', t3, humidity'
 
         # Prepare the placeholders for temperature values
         temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 1))
+        temperature_placeholders += ', %s, %s'
 
         # Construct the values to be inserted (timestamp followed by temperature values)
-        values = temperatures[1:]
+        values = temperatures[1:] + [local_temperature, local_humidity]
 
         # Construct the query with placeholders
         insert_query = f"""
@@ -151,7 +166,7 @@ def insert_records(db, temperatures, table_name):
         # Record to insert including rounded timestamp and temperatures
         cursor.execute(insert_query, [timestamp] + values)
         connection.commit()
-        print("Data inserted ", db, " successfully!")
+        print("Data inserted", db, "successfully!")
         close_connection()
 
     except (Exception, psycopg2.Error) as error:
@@ -162,8 +177,10 @@ def insert_records(db, temperatures, table_name):
 def move_records_to_remote_db(table_name):
     open_connection("local")
     try:
+        # I limit the fetching to 10 entries everytime we need to move in order to still let the every minute interval be able to perform
         select_query = f'''
         SELECT * FROM {table_name};
+        LIMIT 10; 
         '''
         cursor.execute(select_query)
         records = cursor.fetchall()
@@ -228,9 +245,6 @@ try:
             # Remove surrounding single quotes
             received_message = received_message.strip("'")
             temperatures = eval(received_message)
-            print(temperatures)
-            print(type(temperatures))
-            print("-------------------------")
             if check_network_connection():
                 insert_records("remote", temperatures, settings_reading("remote","table"))
                 move_records_to_remote_db(settings_reading("remote","table"))

@@ -13,7 +13,6 @@ import time
 import psycopg2
 import socket
 import configparser
-from datetime import datetime, timezone
 import datetime
 import sys
 import threading
@@ -180,7 +179,7 @@ def insert_records(db, temperatures, table_name):
         # Record to insert including rounded timestamp and temperatures
         cursor.execute(insert_query, [timestamp] + values)
         connection.commit()
-        print("Data inserted locally successfully!")
+        print("Data inserted", db, "successfully!")
         close_connection()
 
     except (Exception, psycopg2.Error) as error:
