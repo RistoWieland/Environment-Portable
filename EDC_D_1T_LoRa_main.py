@@ -38,7 +38,7 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.01"
+script_version = "v1.02"
 release_notes ="initial version. Check if auto update works"
 
 
@@ -299,9 +299,9 @@ def display_writing(temperatures):
 
 
 # drop_table("remote", settings_reading("remote","table"))
-create_table("remote", settings_reading("remote","table"))
+# create_table("remote", settings_reading("remote","table"))
 # drop_table("local", settings_reading("local","table"))
-create_table("local", settings_reading("local","table"))
+# create_table("local", settings_reading("local","table"))
 
 
 while True:
