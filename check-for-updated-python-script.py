@@ -8,16 +8,33 @@ import subprocess
 import git
 import os
 import time
+import configparser
 
 
-# Define the path to your local repository
-repo_path = '/home/kermit/Environment-Portable/'
+# where the config file is located and load it as global variable
+global config_file
+config_file = '/home/statler/Config/config.ini'
+
+
+def settings_reading(which_section, which_parameter):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    reading = config[which_section][which_parameter]
+    return reading
+
+
+# Define the path to your local repository on the Raspberry Pi
+repo_path = settings_reading("update" , "repo path")
 
 # Define the path where your Python script is stored on the Raspberry Pi
-script_path = '/home/kermit/Environment-Portable/'
+script_path = settings_reading("update" , "script path")
+
+# Define the file name of your Python script
+script_name = settings_reading("update" , "script name")
 
 # Define the name of the systemctl service
-service_name = 'temperature-display.service'
+service_name = settings_reading("update" , "service name")
+
 
 def check_for_updates():
     # Open the repository

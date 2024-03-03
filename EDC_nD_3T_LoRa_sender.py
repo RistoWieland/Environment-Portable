@@ -263,5 +263,4 @@ while True:
             move_records_to_remote_db(settings_reading("local","table"))
         else:    
             insert_records("local", temperatures, settings_reading("local","table"))
-        
     time.sleep(1)
