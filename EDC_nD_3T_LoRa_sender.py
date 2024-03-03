@@ -241,7 +241,7 @@ def read_temp(index):
 
 
 # drop_table("local", settings_reading("local","table"))
-create_table("local", settings_reading("local","table"))
+# create_table("local", settings_reading("local","table"))
 
 prev_minute = None  # Initialize the variable to track the previous minute
 
@@ -257,7 +257,6 @@ while True:
         for i in range(number_of_sensors):
             value = read_temp(i)
             temperatures.append(value)
-        print(temperatures)
         send_lora_data(temperatures)
         # if we don't get the same string back from lora within 30s then we assume there is no conenction and temp is writen locally 
         if check_lora_data_received(temperatures):
