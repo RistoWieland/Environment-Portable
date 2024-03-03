@@ -9,6 +9,8 @@
 # sudo pip3 install spidev
 #
 # Need to disable the serial login shell and have to enable serial interface 
+# Enable I2C
+# Enable SPI
 # command `sudo raspi-config`
 # When the LoRaHAT is attached to RPi, the M0 and M1 jumpers of HAT should be removed.
 
@@ -24,6 +26,7 @@ import select
 import tty
 import smbus2
 import bme280
+from PIL import Image,ImageDraw,ImageFont,ImageColor
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
