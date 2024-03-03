@@ -38,8 +38,8 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.00"
-release_notes ="initial version"
+script_version = "v1.01"
+release_notes ="initial version. Check if auto update works"
 
 
 def settings_reading(which_section, which_parameter):
@@ -298,10 +298,10 @@ def display_writing(temperatures):
 #font_4 = ImageFont.truetype(font_path, font_size_4)
 
 
-drop_table("remote", settings_reading("remote","table"))
-# create_table("remote", settings_reading("remote","table"))
-drop_table("local", settings_reading("local","table"))
-# create_table("local", settings_reading("local","table"))
+# drop_table("remote", settings_reading("remote","table"))
+create_table("remote", settings_reading("remote","table"))
+# drop_table("local", settings_reading("local","table"))
+create_table("local", settings_reading("local","table"))
 
 
 while True:
