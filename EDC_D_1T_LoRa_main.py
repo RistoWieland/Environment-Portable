@@ -2,6 +2,11 @@
 # sudo apt install python3-psycopg2
 # sudo apt install python3-serial
 # sudo pip3 install RPi.bme280
+# sudo apt update
+# sudo apt install python3-pip
+# sudo apt install python3-pil
+# sudo apt install python3-numpy
+# sudo pip3 install spidev
 #
 # Need to disable the serial login shell and have to enable serial interface 
 # command `sudo raspi-config`
@@ -22,6 +27,8 @@ import bme280
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x
+sys.path.append('/home/statler/1.44inch-LCD-HAT-Code')
+import LCD_1in44
 
 
 def settings_reading(which_section, which_parameter):
@@ -257,6 +264,36 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
+def display_writing(temperatures):
+    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+    draw = ImageDraw.Draw(image)
+    draw.text((5, 0), 'Temperatures: ', font=font_1, fill = "WHITE")
+    draw.text((5, 18), 'Date/Time' + str(temperatures[0]), font=font_1, fill = "WHITE")
+    draw.text((5, 36), 't0 : ' + str(temperatures[1]) + '°C', font=font_1, fill = "GREEN")
+    draw.text((5, 54), 't1 : ' + str(temperatures[2]) + '°C', font=font_1, fill = "GREEN")
+    draw.text((5, 72), 't2 : ' + str(temperatures[3]) + '°C', font=font_1, fill = "GREEN")
+    draw.text((5, 90), 't3 : ' + str(temperatures[4]) + '°C', font=font_1, fill = "GREEN")
+    draw.text((5, 108), 'humidity : ' + str(temperatures[5]) + '%', font=font_1, fill = "GREEN")
+    LCD.LCD_ShowImage(image,0,0)
+
+
+# initalizing LCD
+LCD = LCD_1in44.LCD()
+Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
+LCD.LCD_Init(Lcd_ScanDir)
+LCD.LCD_Clear()
+
+# Load a font
+font_path = "/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf"
+font_size_1 = 16
+font_1 = ImageFont.truetype(font_path, font_size_1)
+font_size_2 = 44
+font_2 = ImageFont.truetype(font_path, font_size_2)
+font_size_3 = 26
+font_3 = ImageFont.truetype(font_path, font_size_3)
+font_size_4 = 12
+font_4 = ImageFont.truetype(font_path, font_size_4)
+
 
 # drop_table("remote", settings_reading("remote","table"))
 # create_table("remote", settings_reading("remote","table"))
@@ -273,6 +310,7 @@ while True:
         # Remove surrounding single quotes
         received_message = received_message.strip("'")
         temperatures = eval(received_message)
+        display_writing(temperatures)
         if check_network_connection():
             insert_records("remote", temperatures, settings_reading("remote","table"))
             move_records_to_remote_db(settings_reading("remote","table"))
