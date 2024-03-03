@@ -246,24 +246,22 @@ def send_lora_data(temperatures):
 # create_table("local", settings_reading("local","table"))
 
 
-try:
-    while True:
-        received_message = node.receive()
-        if received_message is not None:
-            # Remove the leading 'b' character
-            if received_message.startswith('b'):
-                received_message = received_message[1:]
-            # Remove surrounding single quotes
-            received_message = received_message.strip("'")
-            temperatures = eval(received_message)
-            if check_network_connection():
-                insert_records("remote", temperatures, settings_reading("remote","table"))
-                move_records_to_remote_db(settings_reading("remote","table"))
-            else:
-                insert_records("local", temperatures, settings_reading("local","table"))
-            send_lora_data(temperatures)
-except Exception as e:
-    print("Error:", e)
+while True:
+    received_message = node.receive()
+    if received_message is not None:
+        # Remove the leading 'b' character
+        if received_message.startswith('b'):
+            received_message = received_message[1:]
+        # Remove surrounding single quotes
+        received_message = received_message.strip("'")
+        temperatures = eval(received_message)
+        if check_network_connection():
+            insert_records("remote", temperatures, settings_reading("remote","table"))
+            move_records_to_remote_db(settings_reading("remote","table"))
+        else:
+            insert_records("local", temperatures, settings_reading("local","table"))
+        send_lora_data(temperatures)
+
 
 
 
