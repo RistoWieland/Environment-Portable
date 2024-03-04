@@ -290,10 +290,8 @@ disp.clear()
 # Make sure to create image with mode '1' for 1-bit color.
 width = disp.width
 height = disp.height
-image
 image = Image.new('1', (width, height))
-# Get drawing object to draw on image.
-draw
+# Get drawing object to draw on image
 draw = ImageDraw.Draw(image)
 
 
