@@ -56,19 +56,28 @@ def check_for_updates():
     else:
         return False
 
-def download_update():
-    # Pull the latest changes from the remote repository
-    repo = git.Repo(repo_path)
-    repo.git.pull()
 
-    # Check if the downloaded files include the script_name
-    downloaded_files = os.listdir(repo_path)
-    print("downloaded : ", downloaded_files)
+def download_update():
+    # Get the list of changed files between the local and remote repositories
+    repo = git.Repo(repo_path)
+    diff_index = repo.index.diff(None)
+
+    # Get the paths of the changed files
+    changed_files = [item.a_path for item in diff_index]
+
+    # Download only the changed files
+    for file in changed_files:
+        remote_file_path = os.path.join(repo_path, file)
+        subprocess.run(['git', 'checkout', 'origin/master', '--', file])
+
+    # Check if the script file is among the changed files
+    print("downloaded : ", changed_files)
     print("script : ", script_name)
-    if script_name in downloaded_files:
+    if script_name in changed_files:
         return True
     else:
         return False
+
 
 def restart_service():
     # Restart the systemctl service
