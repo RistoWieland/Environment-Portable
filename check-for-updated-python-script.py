@@ -33,7 +33,7 @@ script_path = settings_reading("updates", "script path")
 script_name = settings_reading("updates", "script name")
 
 # Define the name of the systemctl service
-service_name = settings_reading("updates", "service names")
+service_name = settings_reading("updates", "service name")
 
 
 def check_for_updates():
