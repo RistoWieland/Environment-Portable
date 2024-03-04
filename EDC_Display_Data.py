@@ -63,15 +63,15 @@ def close_connection():
 def parse_table(db, table_name):
     open_connection(db)
     try:
-        # I limit the fetching to 10 entries everytime we need to move in order to still let the every minute interval be able to perform
+        # I limit the fetching to 1
         select_query = f'''
         SELECT * FROM {table_name}
         ORDER BY timestamp LIMIT 1; 
         '''
         cursor.execute(select_query)
-        records = cursor.fetchall()
+        record = cursor.fetchone()
         close_connection()
-        return records
+        return record
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
@@ -114,6 +114,6 @@ draw = ImageDraw.Draw(image)
 
 
 while True:
-    records = parse_table("remote", settings_reading("remote","table"))
-    display_writing(records)
+    record = parse_table("remote", settings_reading("remote","table"))
+    display_writing(record)
     time.sleep(60)
