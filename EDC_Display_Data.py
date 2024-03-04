@@ -58,46 +58,33 @@ def close_connection():
     connection.close()
 
 
-def move_records_to_remote_db(table_name):
-    open_connection("local")
+def parse_table(db, table_name):
+    open_connection(db)
     try:
         # I limit the fetching to 10 entries everytime we need to move in order to still let the every minute interval be able to perform
         select_query = f'''
         SELECT * FROM {table_name}
-        LIMIT 10; 
+        LIMIT 1; 
         '''
         cursor.execute(select_query)
         records = cursor.fetchall()
         close_connection()
+        return records
     except (Exception, psycopg2.Error) as error:
         print("Error while moving records to remote PostgreSQL", error)
         close_connection()
 
-    open_connection("remote")
-    try:
-        for record in records:
-            insert_query = f'''
-            INSERT INTO {table_name} (timestamp, t0, t1, t2, t3, humidity) VALUES (%s,%s,%s,%s,%s,%s);
-            '''
-            cursor.execute(insert_query, record)    
-        connection.commit()
-        close_connection()
-    except (Exception, psycopg2.Error) as error:
-        print("Error while moving records to remote PostgreSQL", error)
-        close_connection()
 
-    open_connection("local")
-    try:
-        delete_query = f'''
-        DELETE FROM {table_name};
-        '''
-        cursor.execute(delete_query)
-        connection.commit()
-        close_connection()
-    except (Exception, psycopg2.Error) as error:
-        print("Error while moving records to remote PostgreSQL", error)
-        close_connection()
-
+def display_writing(values):
+    # Draw a black filled box to clear the image.
+    draw.rectangle((0,0,width,height), outline=0, fill=0)
+    draw.text((0, 0), "TS : " + str(values[0]), font=font, fill=255)
+    draw.text((0, 11), "t0 : " + str(values[1]) + "°C", font=font, fill=255)
+    draw.text((0, 22), "t1 : " + str(values[2]) + "°C", font=font, fill=255)
+    draw.text((20, 11), "t2: " + str(values[3]) + "°C", font=font, fill=255)
+    draw.text((20, 22), "t3 : " + str(values[4]) + "°C", font=font, fill=255)
+    disp.getbuffer(image)
+    disp.ShowImage()
 
 
 global font, disp, image
@@ -119,13 +106,7 @@ image = Image.new('1', (width, height))
 draw = ImageDraw.Draw(image)
 
 
-def display_writing(values):
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "TS : " + str(values[0]), font=font, fill=255)
-    draw.text((0, 11), "t0 : " + str(values[1]) + "°C", font=font, fill=255)
-    draw.text((0, 22), "t1 : " + str(values[2]) + "°C", font=font, fill=255)
-    draw.text((20, 11), "t2: " + str(values[3]) + "°C", font=font, fill=255)
-    draw.text((20, 22), "t3 : " + str(values[4]) + "°C", font=font, fill=255)
-    disp.getbuffer(image)
-    disp.ShowImage()
+while True:
+    records = parse_table("remote", settings_reading("remote","table"))
+    display_writing(records)
+    time.sleep(60)
