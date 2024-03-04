@@ -57,37 +57,31 @@ def check_for_updates():
         return False
 
 
-def download_update():
-    # Open the repository
-    repo = git.Repo(repo_path)
+def take_snapshot(file_path):
+    # Takes a snapshot of the specified file and returns its hash.
+    with open(file_path, 'rb') as f:
+        file_content = f.read()
+        return hashlib.sha256(file_content).hexdigest()
 
-    # Get the latest commit hash from the local repository
-    latest_commit_local = repo.commit('master')
 
-    # Fetch the latest changes from the remote repository
-    origin = repo.remotes.origin
-    origin.fetch()
+def check_for_updates():
+    # Concatenate script_path and script_name to get the full path of the script file
+    full_script_path = os.path.join(script_path, script_name)
 
-    # Pull the latest changes from the remote repository
-    repo.git.pull()
+    # Take a snapshot of the script file before the update
+    before_hash = take_snapshot(full_script_path)
 
-    # Get the latest commit hash from the remote repository
-    latest_commit_remote = repo.commit('origin/master')
+    # Perform git pull to get the latest changes
+    subprocess.run(['sudo', 'git', 'pull'], cwd=repo_path)
 
-    # Check if the latest commit hashes are different
-    print("latest commit lcoal : ", latest_commit_local)
-    print("latest commit remote : ", latest_commit_remote)
-    if latest_commit_remote != latest_commit_local:
-        # Check if the script file has changed
-        changed_files = [item.a_path for item in repo.index.diff('HEAD')]
-        print("changed files : ", changed_files)
-        print("script name : ", script_name)
-        if script_name in changed_files:
-            return True  # Indicates that the script file has been updated
-        else:
-            return False  # Indicates that no updates are available
+    # Take a snapshot of the script file after the update
+    after_hash = take_snapshot(full_script_path)
+
+    # Compare the hashes to check if the file has changed
+    if before_hash != after_hash:
+        return True
     else:
-        return False  # Indicates that no updates are available
+        return False
 
 
 def restart_service():
