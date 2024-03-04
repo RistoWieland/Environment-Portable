@@ -47,8 +47,8 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.02"
-release_notes ="Check New Updater Script - Test successful"
+script_version = "v1.03"
+release_notes ="Output Temperatures on Display"
 
 
 def settings_reading(which_section, which_parameter):
@@ -298,9 +298,11 @@ draw = ImageDraw.Draw(image)
 def display_writing(values):
     # Draw a black filled box to clear the image.
     draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "TS : "+str(values[0]), font=font, fill=255)
-    draw.text((0, 12), "t0 : "+str(values[1]), font=font, fill=255)
-    draw.text((0, 24), "t1 : "+str(values[2]), font=font, fill=255)
+    draw.text((0, 0), "TS : " + str(values[0]), font=font, fill=255)
+    draw.text((0, 11), "t0 : " + str(values[1]) + "°C", font=font, fill=255)
+    draw.text((0, 22), "t1 : " + str(values[2]) + "°C", font=font, fill=255)
+    draw.text((20, 11), "t2: " + str(values[3]) + "°C", font=font, fill=255)
+    draw.text((20, 22), "t3 : " + str(values[4]) + "°C", font=font, fill=255)
     disp.getbuffer(image)
     disp.ShowImage()
 
