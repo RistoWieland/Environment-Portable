@@ -280,6 +280,7 @@ def send_lora_data(temperatures):
 # 128x32 display with hardware SPI:
 disp = SSD1305.SSD1305()
 # Load Font
+global font
 font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',10)
 # Initialize library.
 disp.Init()
