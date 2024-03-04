@@ -78,6 +78,8 @@ def download_update():
     if latest_commit_remote != latest_commit_local:
         # Check if the script file has changed
         changed_files = [item.a_path for item in repo.index.diff('HEAD')]
+        print("changed files : ", changed_files)
+        print("script name : ", script_name)
         if script_name in changed_files:
             return True  # Indicates that the script file has been updated
         else:
