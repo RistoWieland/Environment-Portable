@@ -58,25 +58,32 @@ def check_for_updates():
 
 
 def download_update():
-    # Get the list of changed files between the local and remote repositories
+    # Open the repository
     repo = git.Repo(repo_path)
-    diff_index = repo.index.diff(None)
 
-    # Get the paths of the changed files
-    changed_files = [item.a_path for item in diff_index]
+    # Fetch the latest changes from the remote repository
+    origin = repo.remotes.origin
+    origin.fetch()
 
-    # Download only the changed files
-    for file in changed_files:
-        remote_file_path = os.path.join(repo_path, file)
-        subprocess.run(['sudo', 'git', 'checkout', 'origin/master', '--', file])
+    # Pull the latest changes from the remote repository
+    repo.git.pull()
 
-    # Check if the script file is among the changed files
-    print("downloaded : ", changed_files)
-    print("script : ", script_name)
-    if os.path.basename(script_name) in [os.path.basename(file) for file in changed_files]:
-        return True
+    # Get the latest commit hash from the remote repository
+    latest_commit_remote = repo.commit('origin/master')
+
+    # Get the latest commit hash from the local repository
+    latest_commit_local = repo.commit('master')
+
+    # Check if the latest commit hashes are different
+    if latest_commit_remote != latest_commit_local:
+        # Check if the script file has changed
+        changed_files = [item.a_path for item in repo.index.diff('HEAD')]
+        if script_name in changed_files:
+            return True  # Indicates that the script file has been updated
+        else:
+            return False  # Indicates that no updates are available
     else:
-        return False
+        return False  # Indicates that no updates are available
 
 
 def restart_service():
