@@ -28,9 +28,6 @@ import datetime
 import tty
 import smbus2
 import bme280  # temp sensor
-from PIL import Image
-from PIL import ImageFont
-from PIL import ImageDraw
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x  # LoRa module

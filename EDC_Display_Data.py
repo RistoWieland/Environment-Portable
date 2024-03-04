@@ -7,6 +7,9 @@ import configparser
 import time
 import datetime
 import spidev
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
 
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'drive')
 if os.path.exists(libdir):
