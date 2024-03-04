@@ -277,36 +277,33 @@ def send_lora_data(temperatures):
 
 
 
-
 # 128x32 display with hardware SPI:
 disp = SSD1305.SSD1305()
-
 # Load Font
-font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',8)
-
+font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',10)
 # Initialize library.
 disp.Init()
-
 # Clear display.
 disp.clear()
-
 # Create blank image for drawing.
 # Make sure to create image with mode '1' for 1-bit color.
 width = disp.width
 height = disp.height
+global image
 image = Image.new('1', (width, height))
 # Get drawing object to draw on image.
+global draw
 draw = ImageDraw.Draw(image)
 
-# Draw a black filled box to clear the image.
-draw.rectangle((0,0,width,height), outline=0, fill=0)
-draw.text((10, 20), "Hello ",  font=font, fill=255)
-disp.getbuffer(image)
-disp.ShowImage()
 
-
-
-
+def display_writing(values):
+    # Draw a black filled box to clear the image.
+    draw.rectangle((0,0,width,height), outline=0, fill=0)
+    draw.text((0, 0), "Timestamp : "+str(values[0])  font=font, fill=255)
+    draw.text((0, 12), "t0 : "+str(values[1])  font=font, fill=255)
+    draw.text((0, 24), "t1 : "+str(values[2])  font=font, fill=255)
+    disp.getbuffer(image)
+    disp.ShowImage()
 
 # drop_table("remote", settings_reading("remote","table"))
 # create_table("remote", settings_reading("remote","table"))
@@ -325,7 +322,7 @@ while True:
         # Remove surrounding single quotes
         received_message = received_message.strip("'")
         temperatures = eval(received_message)
-#        display_writing(temperatures)
+        display_writing(temperatures)
         if check_network_connection():
             insert_records("remote", temperatures, settings_reading("remote","table"))
             move_records_to_remote_db(settings_reading("remote","table"))
