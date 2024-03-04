@@ -10,32 +10,23 @@ import os
 import time
 import configparser
 
+# Define the path to your local repository on the Raspberry Pi
+repo_path = '/home/statler/Environment-Portable/'
 
-# where the config file is located and load it as global variable
-global config_file
-config_file = '/home/statler/Config/config.ini'
+# Define the path where your Python script is stored on the Raspberry Pi
+script_path = '/home/statler/'
 
+# Define the file name of your Python script
+script_name = 'your_script.py'
+
+# Define the name of the systemctl service
+service_name = 'your_service_name.service'
 
 def settings_reading(which_section, which_parameter):
     config = configparser.ConfigParser()
     config.read(config_file)
     reading = config[which_section][which_parameter]
     return reading
-
-
-# Define the path to your local repository on the Raspberry Pi
-repo_path = settings_reading("updates", "repo path")
-# repo_path = '/home/statler/Environment-Portable/'
-
-# Define the path where your Python script is stored on the Raspberry Pi
-script_path = settings_reading("updates", "script path")
-
-# Define the file name of your Python script
-script_name = settings_reading("updates", "script name")
-
-# Define the name of the systemctl service
-service_name = settings_reading("updates", "service name")
-
 
 def check_for_updates():
     # Open the repository
@@ -62,8 +53,12 @@ def download_update():
     repo = git.Repo(repo_path)
     repo.git.pull()
 
-    # Copy or move the updated script to the specified location
-    # shutil.copy2(repo_path, script_path)  # Assuming script_path is the full path including the script name
+    # Check if the downloaded files include the script_name
+    downloaded_files = os.listdir(repo_path)
+    if script_name in downloaded_files:
+        return True
+    else:
+        return False
 
 def restart_service():
     # Restart the systemctl service
@@ -72,11 +67,13 @@ def restart_service():
 while True:
     if check_for_updates():
         print("New version available. Downloading...")
-        download_update()
-        print("Update downloaded successfully.")
-        print("Restarting service...")
-        restart_service()
-        print("Service restarted.")
+        if download_update():
+            print("Update downloaded successfully.")
+            print("Restarting service...")
+            restart_service()
+            print("Service restarted.")
+        else:
+            print("Script file not found after download. Skipping service restart.")
     else:
         print("No updates available.")
     time.sleep(120)
