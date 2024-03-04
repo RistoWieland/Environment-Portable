@@ -81,15 +81,12 @@ def display_writing(data_list):
     # Draw a black filled box to clear the image.
     print(data_list)
     print(type(data_list))
-    data_tuple = data_list[0]
-    print(data_tuple)
-    print(type(data_tuple))
     draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "TS : " + str(data_tuple[0]), font=font, fill=255)
-    draw.text((0, 11), "t0 : " + str(data_tuple[1]) + "°C", font=font, fill=255)
-    draw.text((0, 22), "t1 : " + str(data_tuple[2]) + "°C", font=font, fill=255)
-    draw.text((64, 11), "t2: " + str(data_tuple[3]) + "°C", font=font, fill=255)
-    draw.text((64, 22), "t3 : " + str(data_tuple[4]) + "°C", font=font, fill=255)
+    draw.text((0, 0), "TS : " + str(data_list[0]), font=font, fill=255)
+    draw.text((0, 11), "t0 : " + str(data_list[1]) + "°C", font=font, fill=255)
+    draw.text((0, 22), "t1 : " + str(data_list[2]) + "°C", font=font, fill=255)
+    draw.text((64, 11), "t2: " + str(data_list[3]) + "°C", font=font, fill=255)
+    draw.text((64, 22), "t3 : " + str(data_list[4]) + "°C", font=font, fill=255)
     disp.getbuffer(image)
     disp.ShowImage()
 
