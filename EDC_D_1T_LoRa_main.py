@@ -280,7 +280,7 @@ def send_lora_data(temperatures):
 # 128x32 display with hardware SPI:
 disp = SSD1305.SSD1305()
 # Load Font
-global font
+font
 #font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',10)
 font = ImageFont.load_default()
 # Initialize library.
@@ -291,10 +291,10 @@ disp.clear()
 # Make sure to create image with mode '1' for 1-bit color.
 width = disp.width
 height = disp.height
-global image
+image
 image = Image.new('1', (width, height))
 # Get drawing object to draw on image.
-global draw
+draw
 draw = ImageDraw.Draw(image)
 
 
