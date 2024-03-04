@@ -77,9 +77,6 @@ def parse_table(db, table_name):
 
 
 def display_writing(data_list):
-    # Draw a black filled box to clear the image.
-    print(data_list)
-    print(type(data_list))
     draw.rectangle((0,0,width,height), outline=0, fill=0)
     draw.text((0, 0), "TS : " + str(data_list[0]), font=font, fill=255)
     draw.text((0, 11), "t0 : " + str(data_list[1]) + "°C", font=font, fill=255)
@@ -94,7 +91,7 @@ global font, disp, image
 # 128x32 display with hardware SPI:
 disp = SSD1305.SSD1305()
 # Load Font
-font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf',10)
+font = ImageFont.truetype('/home/statler/Environment-Portable/Fonts/Timeless.ttf',10)
 # font = ImageFont.load_default()
 # Initialize library.
 disp.Init()
