@@ -31,7 +31,7 @@ config_file = '/home/statler/Config/config.ini'
 
 
 # here I keep track of which version this script is
-script_version = "v1.03"
+script_version = "v1.04"
 release_notes ="initial version. check if auto update work. Test new update script"
 
 
