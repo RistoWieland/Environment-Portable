@@ -32,7 +32,7 @@ config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
 script_version = "v1.02"
-release_notes ="initial version. check if auto update work. Test new update script"
+release_notes ="initial version. check if auto update work. Test Successful"
 
 
 def settings_reading(which_section, which_parameter):
