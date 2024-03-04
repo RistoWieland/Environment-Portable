@@ -38,7 +38,7 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.03"
+script_version = "v1.02"
 release_notes ="Check New Updater Script - Test successful"
 
 
