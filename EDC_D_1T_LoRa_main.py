@@ -24,7 +24,6 @@ import configparser
 import socket
 import time
 import datetime
-# import select
 import tty
 import smbus2
 import bme280  # temp sensor
