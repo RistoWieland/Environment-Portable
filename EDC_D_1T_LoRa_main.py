@@ -281,8 +281,8 @@ def send_lora_data(temperatures):
 disp = SSD1305.SSD1305()
 # Load Font
 font
-#font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',10)
-font = ImageFont.load_default()
+font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf',10)
+# font = ImageFont.load_default()
 # Initialize library.
 disp.Init()
 # Clear display.
@@ -301,7 +301,7 @@ draw = ImageDraw.Draw(image)
 def display_writing(values):
     # Draw a black filled box to clear the image.
     draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "Timestamp : "+str(values[0]), font=font, fill=255)
+    draw.text((0, 0), "TS : "+str(values[0]), font=font, fill=255)
     draw.text((0, 12), "t0 : "+str(values[1]), font=font, fill=255)
     draw.text((0, 24), "t1 : "+str(values[2]), font=font, fill=255)
     disp.getbuffer(image)
