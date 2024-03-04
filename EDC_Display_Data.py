@@ -65,8 +65,7 @@ def parse_table(db, table_name):
     try:
         # I limit the fetching to 1
         select_query = f'''
-        SELECT * FROM {table_name}
-        ORDER BY timestamp LIMIT 1; 
+        SELECT * FROM {table_name} ORDER BY timestamp LIMIT 1; 
         '''
         cursor.execute(select_query)
         record = cursor.fetchone()
