@@ -41,8 +41,8 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.03"
-release_notes ="Output Temperatures on Display"
+script_version = "v1.04"
+release_notes ="Cleaned up Version with having Display in a seperate script"
 
 
 def settings_reading(which_section, which_parameter):
