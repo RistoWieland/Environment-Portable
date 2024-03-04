@@ -73,7 +73,7 @@ def download_update():
     # Check if the script file is among the changed files
     print("downloaded : ", changed_files)
     print("script : ", script_name)
-    if script_name in changed_files:
+    if os.path.basename(script_name) in [os.path.basename(file) for file in changed_files]:
         return True
     else:
         return False
