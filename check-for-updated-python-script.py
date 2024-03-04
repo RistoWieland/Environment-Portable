@@ -68,16 +68,13 @@ def restart_service():
     # Restart the systemctl service
     subprocess.run(['sudo', 'systemctl', 'restart', service_name])
 
+
 while True:
     if check_for_updates():
         print("New version available. Downloading...")
-        if download_update():
-            print("Update downloaded successfully.")
-            print("Restarting service...")
-            restart_service()
-            print("Service restarted.")
-        else:
-            print("Script file not found after download. Skipping service restart.")
+        print("Restarting service...")
+        restart_service()
+        print("Service restarted.")
     else:
         print("No updates available.")
     time.sleep(120)
