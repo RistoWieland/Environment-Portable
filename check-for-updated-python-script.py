@@ -75,6 +75,8 @@ def download_update():
     latest_commit_local = repo.commit('master')
 
     # Check if the latest commit hashes are different
+    print("latest commit lcoal : ", latest_commit_local)
+    print("latest commit remote : ", latest_commit_remote)
     if latest_commit_remote != latest_commit_local:
         # Check if the script file has changed
         changed_files = [item.a_path for item in repo.index.diff('HEAD')]
