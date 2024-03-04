@@ -37,27 +37,6 @@ script_name = settings_reading("updates", "script name")
 service_name = settings_reading("updates", "service name")
 
 
-def check_for_updates():
-    # Open the repository
-    repo = git.Repo(repo_path)
-
-    # Fetch the latest changes from the remote repository
-    origin = repo.remotes.origin
-    origin.fetch()
-
-    # Get the latest commit hash from the remote repository
-    latest_commit_remote = repo.commit('origin/master')
-
-    # Get the latest commit hash from the local repository
-    latest_commit_local = repo.commit('master')
-
-    # Compare the latest commit hashes
-    if latest_commit_remote != latest_commit_local:
-        return True
-    else:
-        return False
-
-
 def take_snapshot(file_path):
     # Takes a snapshot of the specified file and returns its hash.
     with open(file_path, 'rb') as f:
