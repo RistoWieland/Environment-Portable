@@ -25,12 +25,15 @@ import datetime
 import select
 import tty
 import smbus2
-import bme280
-# import LCD_1in44
-# from PIL import Image,ImageDraw,ImageFont,ImageColor
+import bme280  # temp sensor
+import SPI
+import SSD1305 # display
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
-import sx126x
+import sx126x  # LoRa module
 
 
 # where the config file is located and load it as global variable
@@ -267,35 +270,42 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
-def display_writing(temperatures):
-    image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
-    draw = ImageDraw.Draw(image)
-    draw.text((5, 0), 'Temperatures: ', font=font_1, fill = "WHITE")
-    draw.text((5, 18), 'Date/Time' + str(temperatures[0]), font=font_1, fill = "WHITE")
-    draw.text((5, 36), 't0 : ' + str(temperatures[1]) + '°C', font=font_1, fill = "GREEN")
-    draw.text((5, 54), 't1 : ' + str(temperatures[2]) + '°C', font=font_1, fill = "GREEN")
-    draw.text((5, 72), 't2 : ' + str(temperatures[3]) + '°C', font=font_1, fill = "GREEN")
-    draw.text((5, 90), 't3 : ' + str(temperatures[4]) + '°C', font=font_1, fill = "GREEN")
-    draw.text((5, 108), 'humidity : ' + str(temperatures[5]) + '%', font=font_1, fill = "GREEN")
-    LCD.LCD_ShowImage(image,0,0)
+# Raspberry Pi pin configuration for Display:
+RST = None
+# Note the following are only used with SPI:
+DC = 24
+SPI_PORT = 0
+SPI_DEVICE = 0
 
+# 128x32 display with hardware SPI:
+disp = SSD1305.SSD1305_128_32(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
 
-# initalizing LCD
-# LCD = LCD_1in44.LCD()
-# Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
-# LCD.LCD_Init(Lcd_ScanDir)
-# LCD.LCD_Clear()
+# Initialize library.
+disp.begin()
 
-# Load a font
-#font_path = "/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf"
-#font_size_1 = 16
-#font_1 = ImageFont.truetype(font_path, font_size_1)
-#font_size_2 = 44
-#font_2 = ImageFont.truetype(font_path, font_size_2)
-#font_size_3 = 26
-#font_3 = ImageFont.truetype(font_path, font_size_3)
-#font_size_4 = 12
-#font_4 = ImageFont.truetype(font_path, font_size_4)
+# Get display width and height.
+width = disp.width
+height = disp.height
+
+# Clear display.
+disp.clear()
+disp.display()
+
+# Create image buffer.
+# Make sure to create image with mode '1' for 1-bit color.
+image = Image.new('1', (width, height))
+
+# Load font
+font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',14)
+
+# Create drawing object.
+draw = ImageDraw.Draw(image)
+
+# Draw a black filled box to initially clear the image.
+draw.rectangle((0,0,width,height), outline=0, fill=0)
+draw.text((10, 20), "Hello", font=font, fill=255)
+disp.image(image)
+disp.display()
 
 
 # drop_table("remote", settings_reading("remote","table"))
