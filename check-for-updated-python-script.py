@@ -61,6 +61,9 @@ def download_update():
     # Open the repository
     repo = git.Repo(repo_path)
 
+    # Get the latest commit hash from the local repository
+    latest_commit_local = repo.commit('master')
+
     # Fetch the latest changes from the remote repository
     origin = repo.remotes.origin
     origin.fetch()
@@ -70,9 +73,6 @@ def download_update():
 
     # Get the latest commit hash from the remote repository
     latest_commit_remote = repo.commit('origin/master')
-
-    # Get the latest commit hash from the local repository
-    latest_commit_local = repo.commit('master')
 
     # Check if the latest commit hashes are different
     print("latest commit lcoal : ", latest_commit_local)
