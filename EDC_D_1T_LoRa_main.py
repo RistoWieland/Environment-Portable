@@ -300,9 +300,9 @@ draw = ImageDraw.Draw(image)
 def display_writing(values):
     # Draw a black filled box to clear the image.
     draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "Timestamp : "+str(values[0])  font=font, fill=255)
-    draw.text((0, 12), "t0 : "+str(values[1])  font=font, fill=255)
-    draw.text((0, 24), "t1 : "+str(values[2])  font=font, fill=255)
+    draw.text((0, 0), "Timestamp : "+str(values[0]), font=font, fill=255)
+    draw.text((0, 12), "t0 : "+str(values[1]), font=font, fill=255)
+    draw.text((0, 24), "t1 : "+str(values[2]), font=font, fill=255)
     disp.getbuffer(image)
     disp.ShowImage()
 
