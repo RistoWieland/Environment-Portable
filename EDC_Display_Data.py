@@ -89,7 +89,7 @@ def display_writing(data_list):
     draw.text((0, 0), "TS : " + str(data_tuple[0]), font=font, fill=255)
     draw.text((0, 11), "t0 : " + str(data_tuple[1]) + "°C", font=font, fill=255)
     draw.text((0, 22), "t1 : " + str(data_tuple[2]) + "°C", font=font, fill=255)
-    draw.text((20, 11), "t2: " + str(vdata_tuple[3]) + "°C", font=font, fill=255)
+    draw.text((20, 11), "t2: " + str(data_tuple[3]) + "°C", font=font, fill=255)
     draw.text((20, 22), "t3 : " + str(data_tuple[4]) + "°C", font=font, fill=255)
     disp.getbuffer(image)
     disp.ShowImage()
