@@ -99,5 +99,6 @@ while True:
             print("Service restarted.")
         else:
             print("No new script is available. Restarting service skipped")
-    print("No updates available.")
+    else:
+        print("No updates available.")
     time.sleep(120)
