@@ -68,7 +68,7 @@ def download_update():
     # Download only the changed files
     for file in changed_files:
         remote_file_path = os.path.join(repo_path, file)
-        subprocess.run(['git', 'checkout', 'origin/master', '--', file])
+        subprocess.run(['sudo', 'git', 'checkout', 'origin/master', '--', file])
 
     # Check if the script file is among the changed files
     print("downloaded : ", changed_files)
