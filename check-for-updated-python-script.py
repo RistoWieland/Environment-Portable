@@ -9,6 +9,7 @@ import git
 import os
 import time
 import configparser
+import hashlib
 
 
 # where the config file is located and load it as global variable
