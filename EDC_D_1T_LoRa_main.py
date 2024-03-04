@@ -27,15 +27,15 @@ import select
 import tty
 import smbus2
 import bme280  # temp sensor
-import spidev
-import SSD1305 # display
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x  # LoRa module
-
+import spidev
+sys.path.append('/home/statler/2.23inch-OLED-HAT-Code/drive')
+import SSD1305 # display
 
 # where the config file is located and load it as global variable
 global config_file
