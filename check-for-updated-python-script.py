@@ -63,7 +63,7 @@ def download_update():
 
     # Check if the downloaded files include the script_name
     downloaded_files = os.listdir(repo_path)
-    print("downloaded : ", download_files)
+    print("downloaded : ", downloaded_files)
     print("script : ", script_name)
     if script_name in downloaded_files:
         return True
