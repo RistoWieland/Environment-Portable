@@ -37,6 +37,7 @@ import spidev
 sys.path.append('/home/statler/2.23inch-OLED-HAT-Code/drive')
 import SSD1305 # display
 
+
 # where the config file is located and load it as global variable
 global config_file
 config_file = '/home/statler/Config/config.ini'
@@ -271,42 +272,36 @@ def send_lora_data(temperatures):
     node.send(data)
 
 
-# Raspberry Pi pin configuration for Display:
-RST = None
-# Note the following are only used with SPI:
-DC = 24
-SPI_PORT = 0
-SPI_DEVICE = 0
+
 
 # 128x32 display with hardware SPI:
-disp = SSD1305.SSD1305_128_32(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
+disp = SSD1305.SSD1305()
+
+# Load Font
+font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',8)
 
 # Initialize library.
-disp.begin()
-
-# Get display width and height.
-width = disp.width
-height = disp.height
+disp.Init()
 
 # Clear display.
 disp.clear()
-disp.display()
 
-# Create image buffer.
+# Create blank image for drawing.
 # Make sure to create image with mode '1' for 1-bit color.
+width = disp.width
+height = disp.height
 image = Image.new('1', (width, height))
-
-# Load font
-font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',14)
-
-# Create drawing object.
+# Get drawing object to draw on image.
 draw = ImageDraw.Draw(image)
 
-# Draw a black filled box to initially clear the image.
+# Draw a black filled box to clear the image.
 draw.rectangle((0,0,width,height), outline=0, fill=0)
-draw.text((10, 20), "Hello", font=font, fill=255)
-disp.image(image)
-disp.display()
+draw.text((10, 20), "Hello ",  font=font, fill=255)
+disp.getbuffer(image)
+disp.ShowImage()
+
+
+
 
 
 # drop_table("remote", settings_reading("remote","table"))
