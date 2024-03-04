@@ -24,22 +24,16 @@ import configparser
 import socket
 import time
 import datetime
-import select
+# import select
 import tty
 import smbus2
 import bme280  # temp sensor
-import spidev
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x  # LoRa module
-
-libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'drive')
-if os.path.exists(libdir):
-    sys.path.append(libdir)
-from drive import SSD1305
 
 
 # where the config file is located and load it as global variable
@@ -102,6 +96,11 @@ bme280.load_calibration_params(bus,address)
 #        It will print the RSSI value when it receives each message
 #
 node = sx126x.sx126x(serial_num = "/dev/ttyS0",freq=868,addr=0,power=22,rssi=True,air_speed=2400,relay=False)
+
+def send_lora_data(temperatures):
+    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
+    node.send(data)
+
 
 def open_connection(db): 
     global connection
@@ -271,41 +270,6 @@ def check_network_connection():
         return False
 
 
-def send_lora_data(temperatures):
-    data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
-    node.send(data)
-
-
-global font, disp, image
-# 128x32 display with hardware SPI:
-disp = SSD1305.SSD1305()
-# Load Font
-font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Bold.ttf',10)
-# font = ImageFont.load_default()
-# Initialize library.
-disp.Init()
-# Clear display.
-disp.clear()
-# Create blank image for drawing.
-# Make sure to create image with mode '1' for 1-bit color.
-width = disp.width
-height = disp.height
-image = Image.new('1', (width, height))
-# Get drawing object to draw on image
-draw = ImageDraw.Draw(image)
-
-
-def display_writing(values):
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "TS : " + str(values[0]), font=font, fill=255)
-    draw.text((0, 11), "t0 : " + str(values[1]) + "°C", font=font, fill=255)
-    draw.text((0, 22), "t1 : " + str(values[2]) + "°C", font=font, fill=255)
-    draw.text((20, 11), "t2: " + str(values[3]) + "°C", font=font, fill=255)
-    draw.text((20, 22), "t3 : " + str(values[4]) + "°C", font=font, fill=255)
-    disp.getbuffer(image)
-    disp.ShowImage()
-
 # drop_table("remote", settings_reading("remote","table"))
 # create_table("remote", settings_reading("remote","table"))
 # drop_table("local", settings_reading("local","table"))
@@ -323,7 +287,6 @@ while True:
         # Remove surrounding single quotes
         received_message = received_message.strip("'")
         temperatures = eval(received_message)
-        display_writing(temperatures)
         if check_network_connection():
             insert_records("remote", temperatures, settings_reading("remote","table"))
             move_records_to_remote_db(settings_reading("remote","table"))
