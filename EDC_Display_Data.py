@@ -78,16 +78,19 @@ def parse_table(db, table_name):
         close_connection()
 
 
-def display_writing(values):
+def display_writing(data_list):
     # Draw a black filled box to clear the image.
-    print(values)
-    print(type(values))
+    print(data_list)
+    print(type(data_list))
+    data_tuple = data_list[0]
+    print(data_tuple)
+    print(type(data_tuple))
     draw.rectangle((0,0,width,height), outline=0, fill=0)
-    draw.text((0, 0), "TS : " + str(values[0]), font=font, fill=255)
-    draw.text((0, 11), "t0 : " + str(values[1]) + "°C", font=font, fill=255)
-    draw.text((0, 22), "t1 : " + str(values[2]) + "°C", font=font, fill=255)
-    draw.text((20, 11), "t2: " + str(values[3]) + "°C", font=font, fill=255)
-    draw.text((20, 22), "t3 : " + str(values[4]) + "°C", font=font, fill=255)
+    draw.text((0, 0), "TS : " + str(data_tuple[0]), font=font, fill=255)
+    draw.text((0, 11), "t0 : " + str(data_tuple[1]) + "°C", font=font, fill=255)
+    draw.text((0, 22), "t1 : " + str(data_tuple[2]) + "°C", font=font, fill=255)
+    draw.text((20, 11), "t2: " + str(vdata_tuple[3]) + "°C", font=font, fill=255)
+    draw.text((20, 22), "t3 : " + str(data_tuple[4]) + "°C", font=font, fill=255)
     disp.getbuffer(image)
     disp.ShowImage()
 
