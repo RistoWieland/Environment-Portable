@@ -281,7 +281,8 @@ def send_lora_data(temperatures):
 disp = SSD1305.SSD1305()
 # Load Font
 global font
-font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',10)
+#font = ImageFont.truetype('/home/statler/Environment-Portable/JMH Typewriter-Thin.ttf',10)
+font = ImageFont.load_default()
 # Initialize library.
 disp.Init()
 # Clear display.
