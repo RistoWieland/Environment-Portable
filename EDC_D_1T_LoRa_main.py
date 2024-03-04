@@ -18,6 +18,7 @@
 import ast
 import psycopg2
 import sys
+import os
 import threading
 import configparser
 import socket
@@ -34,8 +35,11 @@ from PIL import ImageDraw
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x  # LoRa module
-sys.path.append('/home/statler/2.23inch-OLED-HAT-Code/Without scrolling/Raspberry Pi/python/drive')
-import SSD1305
+
+libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'drive')
+if os.path.exists(libdir):
+    sys.path.append(libdir)
+from drive import SSD1305
 
 
 # where the config file is located and load it as global variable
