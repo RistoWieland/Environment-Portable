@@ -7,6 +7,7 @@
 # sudo apt install python3-pil
 # sudo apt install python3-numpy
 # sudo pip3 install spidev
+# sudo pip3 install spi
 #
 # Need to disable the serial login shell and have to enable serial interface 
 # Enable I2C
@@ -26,7 +27,7 @@ import select
 import tty
 import smbus2
 import bme280  # temp sensor
-import SPI
+import spidev
 import SSD1305 # display
 from PIL import Image
 from PIL import ImageFont
