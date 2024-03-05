@@ -37,7 +37,7 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.04"
+script_version = "v1.05"
 release_notes ="Cleaned up Version with having Display in a seperate script"
 
 
