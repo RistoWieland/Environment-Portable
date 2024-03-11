@@ -82,11 +82,11 @@ def parse_table(db, table_name):
 def display_writing(data_list):
     draw.rectangle((0,0,width,height), outline=0, fill=0)
     draw.text((0, 0), "TS: " + str(data_list[0]), font=font, fill=255)
-    draw.text((0, 11), "T0: " + str(data_list[1]) + "°", font=font, fill=255)
-    draw.text((0, 22), "T1: " + str(data_list[2]) + "°", font=font, fill=255)
-    draw.text((64, 11), "T2: " + str(data_list[3]) + "°", font=font, fill=255)
-    draw.text((50, 22), "T3: " + str(data_list[4]) + "°", font=font, fill=255)
-    draw.text((74, 22), "T4: " + str(data_list[6]) + "°", font=font, fill=255)
+    draw.text((0, 11), "T0: " + str(data_list[1]) + "°C", font=font, fill=255)
+    draw.text((0, 22), "T1: " + str(data_list[2]) + "°C", font=font, fill=255)
+    draw.text((64, 11), "T2: " + str(data_list[3]) + "°C", font=font, fill=255)
+    draw.text((44, 22), "T3: " + str(data_list[4]) + "°C", font=font, fill=255)
+    draw.text((88, 22), "T4: " + str(data_list[6]) + "°C", font=font, fill=255)
     disp.getbuffer(image)
     disp.ShowImage()
 
