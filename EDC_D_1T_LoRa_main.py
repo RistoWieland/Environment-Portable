@@ -27,6 +27,7 @@ import datetime
 import tty
 import smbus2
 import bme280  # temp sensor
+import glob
 from threading import Timer
 sys.path.append('/home/statler/SX126X_LoRa_HAT_Code')
 import sx126x  # LoRa module
@@ -37,8 +38,8 @@ global config_file
 config_file = '/home/statler/Config/config.ini'
 
 # here I keep track of which version this script is
-script_version = "v1.05"
-release_notes ="Cleaned up Version with having Display in a seperate script"
+script_version = "v1.06"
+release_notes ="Added outside temperature sensor"
 
 
 def settings_reading(which_section, which_parameter):
@@ -97,6 +98,24 @@ def send_lora_data(temperatures):
     data = bytes([255]) + bytes([255]) + bytes([18]) + bytes([255]) + bytes([255]) + bytes([12]) + str(temperatures).encode()
     node.send(data)
 
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
+ 
+def read_temp_outside(index):
+    base_dir = '/sys/bus/w1/devices/'
+    device_folder = glob.glob(base_dir + '28*')[index]
+    device_file = device_folder + '/w1_slave'
+    f = open(device_file, 'r')
+    lines = f.readlines()
+    f.close()
+    while lines[0].strip()[-3:] != 'YES':
+        time.sleep(0.2)
+        lines = read_temp_raw()
+    equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+        temp_string = lines[1][equals_pos+2:]
+        temp_c = round(float(temp_string) / 1000.0, 1)
+        return temp_c
 
 def open_connection(db): 
     global connection
@@ -128,7 +147,8 @@ def create_table(db, table_name):
                 t1 REAL,
                 t2 REAL,
                 t3 REAL,
-                humidity REAL
+                humidity REAL,
+                t4 REAL
             );
         '''
         
@@ -174,6 +194,9 @@ def insert_records(db, temperatures, table_name):
         bme280_data = bme280.sample(bus, address)
         local_humidity = round(bme280_data.humidity)
         local_temperature = round(bme280_data.temperature, 1)
+
+        # outside temperature reading DS18B20
+        outside_temperature = read_temp_outside(1)
         
         # Extract timestamp from temperatures
         timestamp = temperatures[0]
@@ -190,14 +213,14 @@ def insert_records(db, temperatures, table_name):
 
         # Prepare the insert query dynamically for each temperature column
         temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 1))
-        temperature_columns += ', t3, humidity'
+        temperature_columns += ', t3, humidity, t4'
 
         # Prepare the placeholders for temperature values
         temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 1))
-        temperature_placeholders += ', %s, %s'
+        temperature_placeholders += ', %s, %s, %s'
 
         # Construct the values to be inserted (timestamp followed by temperature values)
-        values = temperatures[1:] + [local_temperature, local_humidity]
+        values = temperatures[1:] + [local_temperature, local_humidity, outside_temperature]
 
         # Construct the query with placeholders
         insert_query = f"""
@@ -235,7 +258,7 @@ def move_records_to_remote_db(table_name):
     try:
         for record in records:
             insert_query = f'''
-            INSERT INTO {table_name} (timestamp, t0, t1, t2, t3, humidity) VALUES (%s,%s,%s,%s,%s,%s);
+            INSERT INTO {table_name} (timestamp, t0, t1, t2, t3, humidity, t4) VALUES (%s,%s,%s,%s,%s,%s,%s);
             '''
             cursor.execute(insert_query, record)    
         connection.commit()

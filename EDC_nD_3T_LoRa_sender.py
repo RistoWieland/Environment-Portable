@@ -8,7 +8,6 @@
 
 import os
 import ast
-import glob
 import time
 import psycopg2
 import socket

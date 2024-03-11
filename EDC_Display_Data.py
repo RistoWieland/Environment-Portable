@@ -42,17 +42,20 @@ def settings_writing(which_section, which_parameter, value):
 
 
 def open_connection(db): 
-    global connection
-    config = configparser.ConfigParser()
-    config.read(config_file)
-    connection = psycopg2.connect(user = config[db]["user"],
-                                  password = config[db]["password"],
-                                  host = config[db]["host"],
-                                  port = config[db]["port"],
-                                  database = config[db]["database"],
-                                  sslmode = config[db]["sslmode"])
-    global cursor
-    cursor = connection.cursor()
+    try:
+        global connection
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        connection = psycopg2.connect(user = config[db]["user"],
+                                    password = config[db]["password"],
+                                    host = config[db]["host"],
+                                    port = config[db]["port"],
+                                    database = config[db]["database"],
+                                    sslmode = config[db]["sslmode"])
+        global cursor
+        cursor = connection.cursor()
+    except Exception as err:
+        return False
 
 
 def close_connection():
