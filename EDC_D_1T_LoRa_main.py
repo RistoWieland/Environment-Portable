@@ -212,11 +212,11 @@ def insert_records(db, temperatures, table_name):
             return  # Skip insertion if timestamp already exists
 
         # Prepare the insert query dynamically for each temperature column
-        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 2))
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 3))
         temperature_columns += ', t3, humidity, t4'
 
         # Prepare the placeholders for temperature values
-        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 2))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 3))
         temperature_placeholders += ', %s, %s, %s'
 
         # Construct the values to be inserted (timestamp followed by temperature values)
