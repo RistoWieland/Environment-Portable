@@ -101,9 +101,9 @@ def send_lora_data(temperatures):
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
  
-def read_temp_outside(index):
+def read_temp_outside():
     base_dir = '/sys/bus/w1/devices/'
-    device_folder = glob.glob(base_dir + '28*')[index]
+    device_folder = glob.glob(base_dir + '28*')[0]
     device_file = device_folder + '/w1_slave'
     f = open(device_file, 'r')
     lines = f.readlines()
@@ -196,7 +196,7 @@ def insert_records(db, temperatures, table_name):
         local_temperature = round(bme280_data.temperature, 1)
 
         # outside temperature reading DS18B20
-        outside_temperature = read_temp_outside(1)
+        outside_temperature = read_temp_outside()
         
         # Extract timestamp from temperatures
         timestamp = temperatures[0]
@@ -212,11 +212,11 @@ def insert_records(db, temperatures, table_name):
             return  # Skip insertion if timestamp already exists
 
         # Prepare the insert query dynamically for each temperature column
-        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 3))
+        temperature_columns = ', '.join(f't{i}' for i in range(len(temperatures) - 1))
         temperature_columns += ', t3, humidity, t4'
 
         # Prepare the placeholders for temperature values
-        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 3))
+        temperature_placeholders = ', '.join('%s' for _ in range(len(temperatures) - 1))
         temperature_placeholders += ', %s, %s, %s'
 
         # Construct the values to be inserted (timestamp followed by temperature values)
